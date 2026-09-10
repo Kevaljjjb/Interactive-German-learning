@@ -1,0 +1,126 @@
+:root {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Color Palette - SatzGarten Living Soil & Flora */
+  --bg-app: #F8F9F5;
+  --bg-surface: #FFFFFF;
+  --bg-subtle: #F1F4EE;
+  --bg-muted: #E8EDE4;
+
+  --border-subtle: #E2E7DE;
+  --border-strong: #CDD5C8;
+
+  --text-primary: #1A221C;
+  --text-secondary: #49574D;
+  --text-muted: #738276;
+  --text-inverse: #FFFFFF;
+
+  /* Grammatical Semantic Colors */
+  --tone-green: #407251;
+  --tone-green-soft: #E8F2EC;
+  --tone-coral: #D96B4F;
+  --tone-coral-soft: #FCEEEA;
+  --tone-blue: #3E7287;
+  --tone-blue-soft: #E8F1F5;
+  --tone-yellow: #B88334;
+  --tone-yellow-soft: #FDF4E7;
+  --tone-violet: #6E5A84;
+  --tone-violet-soft: #F1EDF5;
+
+  /* Botanical Gender Codes */
+  --gender-der: #356D85;
+  --gender-die: #D65A54;
+  --gender-das: #4F835A;
+  --gender-plural: #7E5F92;
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 9999px;
+
+  --shadow-sm: 0 1px 3px rgba(34, 50, 38, 0.05);
+  --shadow-md: 0 4px 16px -2px rgba(34, 50, 38, 0.08);
+  --shadow-lg: 0 12px 32px -4px rgba(34, 50, 38, 0.12);
+  --shadow-focus: 0 0 0 3px rgba(64, 114, 81, 0.25);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-app: #111412;
+    --bg-surface: #191E1A;
+    --bg-subtle: #212823;
+    --bg-muted: #2A332C;
+
+    --border-subtle: #2D372F;
+    --border-strong: #3D4A40;
+
+    --text-primary: #EEF2EE;
+    --text-secondary: #B1BEB3;
+    --text-muted: #7E8D81;
+    --text-inverse: #FFFFFF;
+
+    /* High-contrast tone colors for dark backgrounds */
+    --tone-green: #68B682;
+    --tone-coral: #F08E75;
+    --tone-blue: #64B5D6;
+    --tone-yellow: #E6B566;
+    --tone-violet: #B69ED1;
+
+    --gender-der: #64B5D6;
+    --gender-die: #F08E75;
+    --gender-das: #68B682;
+    --gender-plural: #B69ED1;
+
+    --tone-green-soft: #1C2D22;
+    --tone-coral-soft: #341D17;
+    --tone-blue-soft: #172832;
+    --tone-yellow-soft: #302414;
+    --tone-violet-soft: #241D2C;
+
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 12px 32px -4px rgba(0, 0, 0, 0.5);
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: inherit;
+}
+
+input {
+  font-family: inherit;
+  color: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
