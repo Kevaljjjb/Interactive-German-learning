@@ -84,24 +84,24 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
       <div className="onboarding-card" ref={modalRef}>
         <header className="onboarding-header">
           <div className="onboarding-step-indicator">
-            <span className="step-count">SCHRITT {step} VON 4</span>
+            <span className="step-count">STEP {step} OF 4</span>
             <div className="step-pills">
               {[1, 2, 3, 4].map((s) => (
                 <i key={s} className={s <= step ? 'active' : ''} />
               ))}
             </div>
           </div>
-          <button type="button" className="modal-close" onClick={onClose} aria-label="Schließen">
+          <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
             <X size={20} />
           </button>
         </header>
 
         {step === 1 && (
           <div className="onboarding-body">
-            <span className="eyebrow-pill"><Sparkles size={14} /> BLICK-KALIBRIERUNG</span>
-            <h2 id="onboarding-title">Wie siehst du Sätze am liebsten?</h2>
+            <span className="eyebrow-pill"><Sparkles size={14} /> VISUAL CALIBRATION</span>
+            <h2 id="onboarding-title">How do you prefer to see sentences?</h2>
             <p className="onboarding-desc">
-              Visualisiere Grammatik so, wie dein Gehirn am schnellsten Muster erfasst.
+              Visualize grammar the way your brain catches patterns fastest.
             </p>
 
             <div className="visual-choice-grid">
@@ -112,13 +112,13 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                 onClick={() => setVisualStyle('blocks')}
               >
                 <div className="choice-art blocks-art">
-                  <span className="toy-block green">Ich</span>
-                  <span className="toy-block coral">wohne</span>
-                  <span className="toy-block blue">hier</span>
+                  <span className="toy-block green" lang="de" translate="no">Ich</span>
+                  <span className="toy-block coral" lang="de" translate="no">wohne</span>
+                  <span className="toy-block blue" lang="de" translate="no">hier</span>
                 </div>
                 <div className="choice-info">
-                  <strong>Farbige Bausteine</strong>
-                  <p>Klare Farbrollen für Subjekt, Verb und Information.</p>
+                  <strong>Colored building blocks</strong>
+                  <p>Clear color roles for subject, verb, and details.</p>
                 </div>
                 {visualStyle === 'blocks' && <span className="selection-badge"><Check size={16} /></span>}
               </button>
@@ -131,12 +131,12 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
               >
                 <div className="choice-art rails-art">
                   <span className="rail-marker">1</span>
-                  <span className="rail-engine">🚂 Gleis 2</span>
+                  <span className="rail-engine">🚂 Track 2</span>
                   <span className="rail-marker">3</span>
                 </div>
                 <div className="choice-info">
-                  <strong>Gleise & Verbmotor</strong>
-                  <p>Wortstellungen als Schienen und feste Haltestellen.</p>
+                  <strong>Tracks & Verb Engine</strong>
+                  <p>Word order visualized as train tracks and fixed stops.</p>
                 </div>
                 {visualStyle === 'rails' && <span className="selection-badge"><Check size={16} /></span>}
               </button>
@@ -148,12 +148,12 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                 onClick={() => setVisualStyle('metaphors')}
               >
                 <div className="choice-art story-art">
-                  <span>🌱 Frageschalter</span>
-                  <span>🔒 Satzklammer</span>
+                  <span>🌱 Question switch</span>
+                  <span>🔒 Sentence bracket</span>
                 </div>
                 <div className="choice-info">
-                  <strong>Bilder & Metaphern</strong>
-                  <p>Eselsbrücken und alltagsnahe Bildideen statt Grammatikjargon.</p>
+                  <strong>Pictures & Metaphors</strong>
+                  <p>Everyday visual metaphors and intuition over heavy linguistic jargon.</p>
                 </div>
                 {visualStyle === 'metaphors' && <span className="selection-badge"><Check size={16} /></span>}
               </button>
@@ -162,7 +162,7 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
             <div className="onboarding-footer">
               <div />
               <button type="button" className="primary-button" onClick={() => setStep(2)}>
-                Weiter <ArrowRight size={17} />
+                Next <ArrowRight size={17} />
               </button>
             </div>
           </div>
@@ -170,10 +170,10 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
 
         {step === 2 && (
           <div className="onboarding-body">
-            <span className="eyebrow-pill"><Clock size={14} /> TAGES-RHYTHMUS</span>
-            <h2 id="onboarding-title">Wie viel Zeit passt in deinen Alltag?</h2>
+            <span className="eyebrow-pill"><Clock size={14} /> DAILY RHYTHM</span>
+            <h2 id="onboarding-title">How much time fits into your day?</h2>
             <p className="onboarding-desc">
-              Kurze tägliche Einheiten verankern visuelle Muster tiefer als stundenlanges Pauken.
+              Short daily sessions anchor visual patterns deeper than cramming for hours.
             </p>
 
             <div className="time-budget-grid">
@@ -183,9 +183,9 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                 className={`time-card ${dailyMinutes === 5 ? 'selected' : ''}`}
                 onClick={() => setDailyMinutes(5)}
               >
-                <span className="time-val">5 Min.</span>
-                <strong>Der Espresso-Schluck</strong>
-                <p>1 kurzes Muster + 1 schnelles Spiel. Ideal für zwischendurch.</p>
+                <span className="time-val">5 min</span>
+                <strong>The Espresso Shot</strong>
+                <p>1 short pattern + 1 quick game. Perfect for a busy day.</p>
                 {dailyMinutes === 5 && <span className="selection-badge"><Check size={16} /></span>}
               </button>
 
@@ -195,10 +195,10 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                 className={`time-card recommended ${dailyMinutes === 10 ? 'selected' : ''}`}
                 onClick={() => setDailyMinutes(10)}
               >
-                <span className="rec-badge">EMPFOHLEN</span>
-                <span className="time-val">10 Min.</span>
-                <strong>Ausgewogene Gartenpflege</strong>
-                <p>Warmup + Visual Lab + Spielrunde. Der ideale A1-Rhythmus.</p>
+                <span className="rec-badge">RECOMMENDED</span>
+                <span className="time-val">10 min</span>
+                <strong>Balanced Garden Care</strong>
+                <p>Warmup + Visual Lab + play round. The ideal A1 rhythm.</p>
                 {dailyMinutes === 10 && <span className="selection-badge"><Check size={16} /></span>}
               </button>
 
@@ -208,19 +208,19 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                 className={`time-card ${dailyMinutes === 15 ? 'selected' : ''}`}
                 onClick={() => setDailyMinutes(15)}
               >
-                <span className="time-val">15 Min.</span>
-                <strong>Der Tiefen-Fokus</strong>
-                <p>Ganzes Kapitel inklusive Audio-Beispielen und Vertiefung.</p>
+                <span className="time-val">15 min</span>
+                <strong>Deep Focus</strong>
+                <p>Full chapter including audio examples and deeper practice.</p>
                 {dailyMinutes === 15 && <span className="selection-badge"><Check size={16} /></span>}
               </button>
             </div>
 
             <div className="onboarding-footer">
               <button type="button" className="secondary-button" onClick={() => setStep(1)}>
-                Zurück
+                Back
               </button>
               <button type="button" className="primary-button" onClick={() => setStep(3)}>
-                Weiter <ArrowRight size={17} />
+                Next <ArrowRight size={17} />
               </button>
             </div>
           </div>
@@ -228,10 +228,10 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
 
         {step === 3 && (
           <div className="onboarding-body">
-            <span className="eyebrow-pill"><ShieldCheck size={14} /> DEINE HÜRDE</span>
-            <h2 id="onboarding-title">Was fühlt sich in Deutsch chaotisch an?</h2>
+            <span className="eyebrow-pill"><ShieldCheck size={14} /> YOUR BIGGEST HURDLE</span>
+            <h2 id="onboarding-title">What feels tricky about German?</h2>
             <p className="onboarding-desc">
-              Deine Auswahl bestimmt den ersten Spiel-Fokus; danach lernt der Plan aus deinen echten Antworten.
+              Your choice sets your first game focus; then the plan adapts based on your actual answers.
             </p>
 
             <div className="anxiety-choice-list">
@@ -243,8 +243,8 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
               >
                 <span className="item-art">🎨</span>
                 <div className="item-text">
-                  <strong>Das „der / die / das“-Chaos</strong>
-                  <p>Der Artikel-Garten kommt zuerst; Farben bleiben im ganzen Kurs konsistent.</p>
+                  <strong>The “der / die / das” chaos</strong>
+                  <p>Article Garden comes first; colors stay consistent throughout the course.</p>
                 </div>
                 {grammarAnxiety === 'articles' && <Check size={18} className="item-check" />}
               </button>
@@ -257,8 +257,8 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
               >
                 <span className="item-art">🚂</span>
                 <div className="item-text">
-                  <strong>Wortstellung & Verb-Position</strong>
-                  <p>Die Satz-Werkstatt und bewegte Gleise bekommen am Anfang Vorrang.</p>
+                  <strong>Word order & verb position</strong>
+                  <p>Sentence Workshop and moving train tracks take priority early on.</p>
                 </div>
                 {grammarAnxiety === 'word_order' && <Check size={18} className="item-check" />}
               </button>
@@ -271,8 +271,8 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
               >
                 <span className="item-art">🧭</span>
                 <div className="item-text">
-                  <strong>Fälle (Akkusativ & Dativ)</strong>
-                  <p>Fallfehler wandern automatisch in dein nächstes visuelles Warm-up.</p>
+                  <strong>Cases (Accusative & Dative)</strong>
+                  <p>Case mistakes automatically flow into your next visual warm-up.</p>
                 </div>
                 {grammarAnxiety === 'cases' && <Check size={18} className="item-check" />}
               </button>
@@ -285,8 +285,8 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
               >
                 <span className="item-art">🌱</span>
                 <div className="item-text">
-                  <strong>Ganz frisch dabei (Null Vorkenntnisse)</strong>
-                  <p>Wir starten ruhig bei Kapitel 1 und erklären Fachwörter immer am Bild.</p>
+                  <strong>Complete beginner (starting fresh)</strong>
+                  <p>We start gently with Chapter 1 and always explain terms with pictures.</p>
                 </div>
                 {grammarAnxiety === 'none' && <Check size={18} className="item-check" />}
               </button>
@@ -294,10 +294,10 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
 
             <div className="onboarding-footer">
               <button type="button" className="secondary-button" onClick={() => setStep(2)}>
-                Zurück
+                Back
               </button>
               <button type="button" className="primary-button" onClick={() => setStep(4)}>
-                Weiter <ArrowRight size={17} />
+                Next <ArrowRight size={17} />
               </button>
             </div>
           </div>
@@ -305,26 +305,26 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
 
         {step === 4 && (
           <div className="onboarding-body">
-            <span className="eyebrow-pill"><Heart size={14} /> FEINSCHLIFF</span>
-            <h2 id="onboarding-title">Wie darf dein Garten dich ansprechen?</h2>
+            <span className="eyebrow-pill"><Heart size={14} /> FINISHING TOUCHES</span>
+            <h2 id="onboarding-title">How should SatzGarten speak to you?</h2>
             <p className="onboarding-desc">
-              Gib deinem SatzGarten eine persönliche Note.
+              Give your SatzGarten a personal touch.
             </p>
 
             <div className="form-row">
-              <label htmlFor="user-name-input">Dein Vorname oder Entdecker-Name (optional):</label>
+              <label htmlFor="user-name-input">Your name or explorer nickname (optional):</label>
               <input
                 id="user-name-input"
                 type="text"
                 value={name}
-                placeholder="z. B. Alex"
+                placeholder="e.g. Alex"
                 onChange={(e) => setName(e.target.value)}
                 className="styled-input"
               />
             </div>
 
             <div className="feedback-toggle-row">
-              <span className="toggle-label">Feedback-Begleitung:</span>
+              <span className="toggle-label">Feedback style:</span>
               <div className="toggle-options">
                 <button
                   type="button"
@@ -333,7 +333,7 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                   onClick={() => setFeedback('gentle')}
                 >
                   <Heart size={16} />
-                  <span>Sanft & Ermutigend</span>
+                  <span>Gentle & Encouraging</span>
                 </button>
                 <button
                   type="button"
@@ -342,7 +342,7 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
                   onClick={() => setFeedback('direct')}
                 >
                   <Zap size={16} />
-                  <span>Klar & Direkt</span>
+                  <span>Direct & Clear</span>
                 </button>
               </div>
             </div>
@@ -350,19 +350,19 @@ export function OnboardingModal({ isOpen, profile, onClose, onComplete }: Onboar
             <div className="onboarding-summary-box">
               <span className="summary-sprout">✦</span>
               <div>
-                <strong>Dein visueller Lern-Fingerabdruck ist bereit!</strong>
+                <strong>Your visual learning fingerprint is ready!</strong>
                 <p>
-                  {dailyMinutes} Min./Tag · {visualStyle === 'blocks' ? 'Bausteine' : visualStyle === 'rails' ? 'Gleise' : 'Metaphern'} · {feedback === 'gentle' ? 'Sanftes Feedback' : 'Direkte Formeln'}
+                  {dailyMinutes} min/day · {visualStyle === 'blocks' ? 'Building blocks' : visualStyle === 'rails' ? 'Tracks' : 'Metaphors'} · {feedback === 'gentle' ? 'Gentle feedback' : 'Direct formulas'}
                 </p>
               </div>
             </div>
 
             <div className="onboarding-footer">
               <button type="button" className="secondary-button" onClick={() => setStep(3)}>
-                Zurück
+                Back
               </button>
               <button type="button" className="primary-button highlight" onClick={handleFinish}>
-                Garten betreten <Sparkles size={17} />
+                Enter garden <Sparkles size={17} />
               </button>
             </div>
           </div>

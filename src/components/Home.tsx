@@ -18,8 +18,8 @@ type HomeProps = {
   onPracticeWobbly?: (unitId: string) => void
 }
 
-function germanDate() {
-  const value = new Intl.DateTimeFormat('de-DE', {
+function formattedDate() {
+  const value = new Intl.DateTimeFormat('en-US', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
@@ -44,50 +44,50 @@ export function Home({
   const nextUnit = curriculum.find((unit) => !progress.completedUnits.includes(unit.id)) ?? curriculum[0]
   const pathPercent = Math.round((progress.completedUnits.length / curriculum.length) * 100)
   const todayIndex = (new Date().getDay() + 6) % 7
-  const greeting = profile.name.trim() ? `Hallo, ${profile.name.trim()}!` : 'Hallo, Entdecker!'
+  const greeting = profile.name.trim() ? `Hello, ${profile.name.trim()}!` : 'Hello, Explorer!'
 
   return (
     <div className="page home-page">
       <header className="page-topbar">
         <div>
-          <span className="date-label">{germanDate()}</span>
+          <span className="date-label">{formattedDate()}</span>
           <h1>{greeting}</h1>
         </div>
         <button className="daily-goal" type="button" onClick={onPersonalize}>
           <Target size={18} />
-          <span><strong>{profile.dailyMinutes} Min.</strong><small>Tagesziel</small></span>
+          <span><strong>{profile.dailyMinutes} min</strong><small>Daily goal</small></span>
         </button>
       </header>
 
       <section className="home-hero" aria-labelledby="hero-title">
         <div className="hero-copy">
-          <span className="eyebrow-pill"><Sparkles size={14} /> DEUTSCH, DAS DU SEHEN KANNST</span>
-          <h2 id="hero-title">Grammatik ist kein Text.<br /><em>Sie ist ein Muster.</em></h2>
-          <p>Verschiebe Wörter, sieh Regeln in Farbe und lerne mit kleinen Aha-Momenten.</p>
+          <span className="eyebrow-pill"><Sparkles size={14} /> GERMAN YOU CAN SEE</span>
+          <h2 id="hero-title">Grammar is not text.<br /><em>It is a pattern.</em></h2>
+          <p>Move words, see rules in color, and learn with intuitive aha moments.</p>
           <div className="hero-actions">
             <button className="primary-button light" type="button" onClick={() => onOpenUnit(nextUnit)}>
-              <Play size={17} fill="currentColor" /> Weiterlernen
+              <Play size={17} fill="currentColor" /> Continue learning
             </button>
             <button className="text-button hero-link" type="button" onClick={onOpenPath}>
-              Alle 12 Kapitel <ArrowRight size={17} />
+              All 12 chapters <ArrowRight size={17} />
             </button>
           </div>
           <div className="hero-progress">
-            <span>{pathPercent}% des A1-Wegs</span>
+            <span>{pathPercent}% of the A1 journey</span>
             <div className="progress-track dark"><span style={{ width: `${pathPercent}%` }} /></div>
           </div>
         </div>
 
-        <div className="hero-visual" aria-label="Ein visueller Satz mit dem Verb auf Position zwei">
+        <div className="hero-visual" aria-label="A visual sentence with the verb in position two">
           <div className="orbit orbit-one" />
           <div className="orbit orbit-two" />
           <span className="floating-leaf leaf-a">✦</span>
           <span className="floating-leaf leaf-b">●</span>
           <div className="position-flag">POSITION 2</div>
-          <div className="sentence-stack notranslate" translate="no" lang="de">
-            <span className="hero-word green-word">ICH<small>WER?</small></span>
-            <span className="hero-word coral-word">LERNE<small>VERB</small></span>
-            <span className="hero-word blue-word">DEUTSCH<small>WAS?</small></span>
+          <div className="sentence-stack" lang="en">
+            <span className="hero-word green-word"><span lang="de" translate="no">ICH</span><small>WHO?</small></span>
+            <span className="hero-word coral-word"><span lang="de" translate="no">LERNE</span><small>VERB</small></span>
+            <span className="hero-word blue-word"><span lang="de" translate="no">DEUTSCH</span><small>WHAT?</small></span>
           </div>
           <div className="mascot-bubble" aria-hidden="true">
             <span className="mascot-eyes">••</span>
@@ -120,13 +120,13 @@ export function Home({
 
             <div className="micro-lessons">
               <button type="button" onClick={() => onOpenUnit(curriculum[2])}>
-                <span className="micro-icon blue">der</span>
-                <span><small>FARBCODE</small><strong>Artikel sehen</strong></span>
+                <span className="micro-icon blue" lang="de" translate="no">der</span>
+                <span><small>COLOR CODE</small><strong>See articles</strong></span>
                 <ChevronRight size={18} />
               </button>
               <button type="button" onClick={onPractice}>
                 <span className="micro-icon yellow">A↔B</span>
-                <span><small>2-MIN-SPIEL</small><strong>Sätze ordnen</strong></span>
+                <span><small>2-MIN GAME</small><strong>Arrange sentences</strong></span>
                 <ChevronRight size={18} />
               </button>
             </div>
@@ -135,10 +135,10 @@ export function Home({
           <section className="section-block path-preview">
             <div className="section-heading">
               <div>
-                <span className="section-kicker">A1-LERNPFAD</span>
-                <h2>Deine nächsten Beete</h2>
+                <span className="section-kicker">A1 LEARNING PATH</span>
+                <h2>Your next chapters</h2>
               </div>
-              <button className="text-button" type="button" onClick={onOpenPath}>Alle ansehen <ArrowRight size={16} /></button>
+              <button className="text-button" type="button" onClick={onOpenPath}>View all <ArrowRight size={16} /></button>
             </div>
             <div className="preview-units">
               {curriculum.slice(0, 3).map((unit) => {
@@ -162,10 +162,10 @@ export function Home({
           <section className="streak-card">
             <div className="streak-top">
               <span className="streak-flame"><Flame size={24} fill="currentColor" /></span>
-              <div><strong>{progress.streak} {progress.streak === 1 ? 'Tag' : 'Tage'}</strong><small>Deine kleine Serie</small></div>
+              <div><strong>{progress.streak} {progress.streak === 1 ? 'day' : 'days'}</strong><small>Your streak</small></div>
             </div>
             <div className="week-row">
-              {['M', 'D', 'M', 'D', 'F', 'S', 'S'].map((day, index) => {
+              {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => {
                 const visibleStreak = Math.min(progress.streak, todayIndex + 1)
                 const isDone = visibleStreak > 0 && index <= todayIndex && index > todayIndex - visibleStreak
                 return (
@@ -175,30 +175,30 @@ export function Home({
                 )
               })}
             </div>
-            <p>Schon 5 Minuten zählen. Komm morgen wieder und lass deinen Garten wachsen.</p>
+            <p>Even 5 minutes count. Come back tomorrow and watch your garden grow.</p>
           </section>
 
           <section className="pattern-card">
             <div className="pattern-card-head">
-              <span><span className="live-dot" /> LIVE-MUSTER</span>
-              <button type="button" onClick={() => setPatternMode(patternMode === 'subject' ? 'time' : 'subject')}>Tauschen</button>
+              <span><span className="live-dot" /> LIVE PATTERN</span>
+              <button type="button" onClick={() => setPatternMode(patternMode === 'subject' ? 'time' : 'subject')}>Swap</button>
             </div>
-            <h3>Was bleibt gleich?</h3>
-            <p>Tippe auf „Tauschen“ und beobachte den orangefarbenen Verbblock.</p>
-            <div className="mini-track notranslate" translate="no" lang="de">
+            <h3>What stays the same?</h3>
+            <p>Tap “Swap” and watch the orange verb block.</p>
+            <div className="mini-track" lang="en">
               {patternMode === 'subject' ? (
-                <><span className="tone-green">Ich<small>1</small></span><span className="tone-coral">lerne<small>2</small></span><span className="tone-blue">heute<small>3</small></span></>
+                <><span className="tone-green"><span lang="de" translate="no">Ich</span><small>1</small></span><span className="tone-coral"><span lang="de" translate="no">lerne</span><small>2</small></span><span className="tone-blue"><span lang="de" translate="no">heute</span><small>3</small></span></>
               ) : (
-                <><span className="tone-yellow">Heute<small>1</small></span><span className="tone-coral">lerne<small>2</small></span><span className="tone-green">ich<small>3</small></span></>
+                <><span className="tone-yellow"><span lang="de" translate="no">Heute</span><small>1</small></span><span className="tone-coral"><span lang="de" translate="no">lerne</span><small>2</small></span><span className="tone-green"><span lang="de" translate="no">ich</span><small>3</small></span></>
               )}
             </div>
-            <div className="aha-note"><span>💡</span><p><strong>Aha!</strong> Das Verb bleibt immer auf Position 2.</p></div>
+            <div className="aha-note"><span>💡</span><p><strong>Aha!</strong> The verb always stays in Position 2.</p></div>
           </section>
 
           <section className="mini-fingerprint-card">
             <div className="mini-fp-head">
-              <span>🌱 GARTEN-STATUS</span>
-              <strong>{Math.round(Object.values(fingerprint.pillars).reduce((a, b) => a + b.score, 0) / 5)}% Vitalität</strong>
+              <span>🌱 GARDEN STATUS</span>
+              <strong>{Math.round(Object.values(fingerprint.pillars).reduce((a, b) => a + b.score, 0) / 5)}% Vitality</strong>
             </div>
             <div className="mini-fp-bars">
               {Object.values(fingerprint.pillars).map((p) => (
@@ -210,14 +210,14 @@ export function Home({
             </div>
             {progress.wobblyItems && progress.wobblyItems.length > 0 && onClearWobbly && (
               <button type="button" className="mini-watering-btn" onClick={onClearWobbly}>
-                🌱 {progress.wobblyItems.length} Muster gießen
+                🌱 Water {progress.wobblyItems.length} {progress.wobblyItems.length === 1 ? 'pattern' : 'patterns'}
               </button>
             )}
           </section>
 
           <button className="leaves-card" type="button" onClick={onPractice}>
             <span className="leaves-icon"><Leaf size={22} /></span>
-            <span><small>GESAMMELT</small><strong>{progress.leaves} Blätter</strong></span>
+            <span><small>COLLECTED</small><strong>{progress.leaves} {progress.leaves === 1 ? 'leaf' : 'leaves'}</strong></span>
             <ArrowRight size={18} />
           </button>
         </aside>

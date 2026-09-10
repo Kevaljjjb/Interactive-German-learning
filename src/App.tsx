@@ -118,8 +118,8 @@ export default function App() {
           <PracticeHub
             progress={progress}
             initialGame={activeDailySlotId === 'slot-warmup' ? 'articles' : activeDailySlotId === 'slot-play'
-              ? dailyPlan.slots.find(slot => slot.type === 'play')?.title.includes('Satz-Werkstatt') ? 'sentences'
-                : dailyPlan.slots.find(slot => slot.type === 'play')?.title.includes('Artikel-Garten') ? 'articles' : 'quick'
+              ? (dailyPlan.slots.find(slot => slot.type === 'play')?.title.includes('Sentence Workshop') || dailyPlan.slots.find(slot => slot.type === 'play')?.title.includes('Satz-Werkstatt')) ? 'sentences'
+                : (dailyPlan.slots.find(slot => slot.type === 'play')?.title.includes('Article Garden') || dailyPlan.slots.find(slot => slot.type === 'play')?.title.includes('Artikel-Garten')) ? 'articles' : 'quick'
               : 'menu'}
             onRecordAnswer={recordAnswer}
             onGameComplete={() => {

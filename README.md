@@ -4,6 +4,10 @@ A visual, playful German A1 grammar learning app for personal study. The curricu
 
 ![SatzGarten learning dashboard](docs/preview.png)
 
+## Language
+
+The interface, instructions, grammar explanations, hints, and feedback are in **English**. German sentences, vocabulary, and answer choices stay in **German**, with English translations beside examples. Browser auto-translation is disabled to prevent it from turning distinct German answers into identical English words.
+
 ## Run locally
 
 ```bash
@@ -44,7 +48,7 @@ npm run preview
 
 ## Optional live AI tutor
 
-On each chapter’s **Beispiele** tab, the tutor can offer simpler explanations, fresh examples, and a small challenge. English explanations with German examples are the default.
+On each chapter’s **Examples** tab, the tutor can offer simpler explanations, fresh examples, and a small challenge. English explanations with German examples are the default.
 
 1. Copy `.env.example` to `.env.local`.
 2. Set `AI_PROVIDER` (`gemini` or `openai`), `AI_MODEL` (an actual model ID available to your API account), and `AI_API_KEY`.

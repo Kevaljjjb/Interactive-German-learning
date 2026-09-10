@@ -37,13 +37,13 @@ export function SmartDailyPlan({
     <section className="smart-daily-plan" aria-labelledby="daily-plan-heading">
       <div className="section-heading">
         <div>
-          <span className="section-kicker"><Sparkles size={14} /> DEIN TAGESPFAD</span>
-          <h2 id="daily-plan-heading">3 Schritte für heute</h2>
+          <span className="section-kicker"><Sparkles size={14} /> YOUR DAILY PATH</span>
+          <h2 id="daily-plan-heading">3 steps for today</h2>
         </div>
         <div className="daily-plan-meta">
-          <span className="time-chip"><Clock3 size={15} /> {dailyPlan.totalMinutes} Min.</span>
+          <span className="time-chip"><Clock3 size={15} /> {dailyPlan.totalMinutes} min</span>
           <span className="plan-progress-tag">
-            {completedCount} von {dailyPlan.slots.length} erledigt ({progressPercent}%)
+            {completedCount} of {dailyPlan.slots.length} completed ({progressPercent}%)
           </span>
         </div>
       </div>
@@ -60,10 +60,10 @@ export function SmartDailyPlan({
             >
               <div className="slot-step-header">
                 <span className="slot-step-badge">
-                  {isDone ? <Check size={14} /> : `SCHRITT ${index + 1}`}
+                  {isDone ? <Check size={14} /> : `STEP ${index + 1}`}
                 </span>
                 <span className="slot-duration">
-                  <Clock3 size={13} /> {slot.durationMinutes} Min.
+                  <Clock3 size={13} /> {slot.durationMinutes} min
                 </span>
               </div>
 
@@ -75,9 +75,9 @@ export function SmartDailyPlan({
                     {slot.type === 'play' && <Gamepad2 size={20} />}
                   </span>
                   <small className="slot-category">
-                    {slot.type === 'warmup' && 'BODEN BEREITEN'}
-                    {slot.type === 'core' && 'HAUPTAST · LERNEN'}
-                    {slot.type === 'play' && 'ERNTE · SPIELEN'}
+                    {slot.type === 'warmup' && 'WARMUP'}
+                    {slot.type === 'core' && 'CORE BRANCH · LEARN'}
+                    {slot.type === 'play' && 'HARVEST · PLAY'}
                   </small>
                 </div>
 
@@ -88,16 +88,16 @@ export function SmartDailyPlan({
               <button
                 type="button"
                 className={`slot-action-btn ${isDone ? 'btn-done' : isCore ? 'primary-button' : 'secondary-button'}`}
-                aria-label={isDone ? `${slot.title} erledigt` : `${slot.title} starten`}
+                aria-label={isDone ? `${slot.title} completed` : `Start ${slot.title}`}
                 onClick={() => handleSlotClick(slot)}
               >
                 {isDone ? (
                   <>
-                    <Check size={16} /> Erledigt
+                    <Check size={16} /> Completed
                   </>
                 ) : (
                   <>
-                    Starten <ArrowRight size={16} />
+                    Start <ArrowRight size={16} />
                   </>
                 )}
               </button>
@@ -110,8 +110,8 @@ export function SmartDailyPlan({
         <div className="all-slots-celebration">
           <span className="celeb-flame"><Flame size={20} /></span>
           <div>
-            <strong>Tagesziel erreicht! Dein Garten blüht.</strong>
-            <p>Morgen wartet das nächste Beet auf dich. Du hast heute 30 Blätter verdient!</p>
+            <strong>Daily goal reached! Your garden is thriving.</strong>
+            <p>The next garden bed awaits tomorrow. You earned 30 leaves today!</p>
           </div>
         </div>
       )}

@@ -10,10 +10,10 @@ type LearningFingerprintCardProps = {
 }
 
 const levelLabels: Record<string, { label: string; icon: string; tone: string }> = {
-  seed: { label: 'Saat', icon: '🌱', tone: 'seed' },
-  sprout: { label: 'Keimling', icon: '🌿', tone: 'sprout' },
-  bloom: { label: 'Blüte', icon: '🌸', tone: 'bloom' },
-  deep_root: { label: 'Verwurzelt', icon: '🌳', tone: 'root' },
+  seed: { label: 'Seed', icon: '🌱', tone: 'seed' },
+  sprout: { label: 'Sprout', icon: '🌿', tone: 'sprout' },
+  bloom: { label: 'Bloom', icon: '🌸', tone: 'bloom' },
+  deep_root: { label: 'Deep Root', icon: '🌳', tone: 'root' },
 }
 
 export function LearningFingerprintCard({
@@ -46,10 +46,10 @@ export function LearningFingerprintCard({
   const dominantMode = measuredModes[0]?.[0] ?? (Object.entries(modeSignals) as [keyof typeof modeSignals, number][])
     .sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'visual'
   const modeLabels = {
-    visual: 'Farben & Bilder',
-    building: 'Wörter bauen',
-    listening: 'Hören',
-    examples: 'Beispiele vergleichen',
+    visual: 'Colors & Visuals',
+    building: 'Sentence Building',
+    listening: 'Listening',
+    examples: 'Comparing Examples',
   }
   const weakestPillar = [...pillars].sort((a, b) => a[1].score - b[1].score)[0]?.[1]
 
@@ -57,45 +57,45 @@ export function LearningFingerprintCard({
     <section className="fingerprint-card" aria-labelledby="fingerprint-title">
       <div className="fingerprint-header">
         <div className="fingerprint-title-wrap">
-          <span className="section-kicker"><Sparkles size={14} /> DEIN LERN-FINGERABDRUCK</span>
-          <h2 id="fingerprint-title">Wie dein Sprachgarten wächst</h2>
+          <span className="section-kicker"><Sparkles size={14} /> YOUR LEARNING FINGERPRINT</span>
+          <h2 id="fingerprint-title">How your language garden grows</h2>
           <p>
-            Grammatik als lebendige Wurzeln statt starre Noten. Jede Pflanze repräsentiert ein Kernmuster.
+            Grammar as living roots rather than rigid grades. Each plant represents a core pattern.
           </p>
         </div>
 
         <div className="fingerprint-total-badge">
           <div className="total-circle">
             <span className="total-num">{totalScore}%</span>
-            <small>Vitalität</small>
+            <small>Vitality</small>
           </div>
           <button type="button" className="text-button adjust-btn" onClick={onRecalibrate}>
-            <RotateCcw size={14} /> Kalibrierung
+            <RotateCcw size={14} /> Recalibrate
           </button>
         </div>
       </div>
 
       <div className="adaptive-insight-grid">
         <article className="coach-insight-card">
-          <div className="coach-card-top"><span><BrainCircuit size={18} /> ADAPTIVER COACH</span><small><ShieldCheck size={13} /> lokal & privat</small></div>
+          <div className="coach-card-top"><span><BrainCircuit size={18} /> ADAPTIVE COACH</span><small><ShieldCheck size={13} /> local & private</small></div>
           <h3>{measuredAttempts === 0
-            ? 'Ich lerne mit deiner ersten Runde.'
+            ? 'Learning alongside your very first round.'
             : wobblyItems.length
-              ? 'Dein markiertes Muster bekommt als Nächstes extra Licht.'
-              : `${weakestPillar?.label ?? 'Ein Muster'} bekommt als Nächstes extra Licht.`}</h3>
+              ? 'Your marked pattern will get extra light next.'
+              : `${weakestPillar?.label ?? 'A pattern'} will get extra light next.`}</h3>
           <p>{measuredAttempts === 0
-            ? 'Löse ein paar Aufgaben und markiere dein Bauchgefühl. Danach passe ich Reihenfolge, Wiederholungen und Spielform an.'
+            ? 'Solve a few exercises and mark your gut feeling. I will then adjust sequence, repetitions, and game formats.'
             : wobblyItems.length
-              ? `Du hast ${wobblyItems.length} wackelige ${wobblyItems.length === 1 ? 'Stelle' : 'Stellen'} markiert. Sie kommen automatisch in dein nächstes Warm-up.`
-              : `Deine sicherste Lernspur ist aktuell „${modeLabels[dominantMode]}“. Ich gewichte passende Aktivitäten etwas stärker.`}</p>
-          <div className="coach-reason"><Sparkles size={15} /><span>Empfehlungen entstehen aus Trefferquote, Antwortzeit und deinem Sicherheitsgefühl.</span></div>
+              ? `You marked ${wobblyItems.length} unsure ${wobblyItems.length === 1 ? 'item' : 'items'}. They will automatically appear in your next warmup.`
+              : `Your strongest learning channel is currently “${modeLabels[dominantMode]}”. I weight matching activities a bit higher.`}</p>
+          <div className="coach-reason"><Sparkles size={15} /><span>Recommendations are shaped by your accuracy, response time, and confidence ratings.</span></div>
         </article>
         <article className="signal-summary-card">
-          <div className="signal-title"><Gauge size={18} /><span>DEINE LERNSIGNALE</span></div>
+          <div className="signal-title"><Gauge size={18} /><span>YOUR LEARNING SIGNALS</span></div>
           <div className="signal-metrics">
-            <div><strong>{measuredAttempts}</strong><small>gemessene Antworten</small></div>
-            <div><strong>{measuredAttempts ? `${measuredAccuracy}%` : '–'}</strong><small>Trefferquote</small></div>
-            <div><strong>{measuredAttempts ? `${averageSeconds}s` : '–'}</strong><small>Ø Denkzeit</small></div>
+            <div><strong>{measuredAttempts}</strong><small>tracked answers</small></div>
+            <div><strong>{measuredAttempts ? `${measuredAccuracy}%` : '–'}</strong><small>accuracy</small></div>
+            <div><strong>{measuredAttempts ? `${averageSeconds}s` : '–'}</strong><small>avg. speed</small></div>
           </div>
           <div className="mode-signal-list">
             {(Object.entries(modeSignals) as [keyof typeof modeSignals, number][]).map(([mode, value]) => {
@@ -128,10 +128,10 @@ export function LearningFingerprintCard({
                   <span style={{ width: `${pillar.score}%` }} />
                 </div>
                 <div className="pillar-meta">
-                  <small>{pillar.score}% Vitalität</small>
+                  <small>{pillar.score}% vitality</small>
                   {pillar.wobblyCount > 0 && (
                     <small className="wobbly-flag">
-                      <AlertCircle size={12} /> {pillar.wobblyCount} wackelig
+                      <AlertCircle size={12} /> {pillar.wobblyCount} unsure
                     </small>
                   )}
                 </div>
@@ -147,13 +147,13 @@ export function LearningFingerprintCard({
             <div className="wobbly-title">
               <span className="wobbly-icon">🌱</span>
               <div>
-                <strong>Bodenpflege: {wobblyItems.length} Muster brauchen etwas Wasser</strong>
-                <p>Hier hast du zuletzt gezögert oder geraten. Diese Sätze festigen wir zuerst.</p>
+                <strong>Soil care: {wobblyItems.length} {wobblyItems.length === 1 ? 'pattern needs' : 'patterns need'} some water</strong>
+                <p>Items where you hesitated or guessed recently. We'll strengthen these first.</p>
               </div>
             </div>
             {onClearWobbly && (
               <button type="button" className="secondary-button watering-btn" onClick={onClearWobbly}>
-                <Droplets size={16} /> Liste als erledigt markieren
+                <Droplets size={16} /> Mark list as completed
               </button>
             )}
           </div>
@@ -162,15 +162,15 @@ export function LearningFingerprintCard({
             {wobblyItems.slice(0, 3).map((item) => (
               <div key={item.id} className="wobbly-item-row">
                 <span className="wobbly-bullet">✦</span>
-                <span className="wobbly-prompt">{item.prompt}</span>
+                <span className="wobbly-prompt" lang="de" translate="no">{item.prompt}</span>
                 {onPracticeWobbly && (
                   <button
                     type="button"
                     className="wobbly-action"
-                    aria-label={`Unsicheres Muster üben: ${item.prompt}`}
+                    aria-label={`Practice unsure pattern: ${item.prompt}`}
                     onClick={() => onPracticeWobbly(item.unitId)}
                   >
-                    Üben
+                    Practice
                   </button>
                 )}
               </div>
@@ -182,10 +182,10 @@ export function LearningFingerprintCard({
       <div className="garden-principles-note">
         <span className="note-sprout"><TreeDeciduous size={20} /></span>
         <div className="note-text">
-          <strong>Das Gärtner-Prinzip von SatzGarten:</strong>
+          <strong>The SatzGarten philosophy:</strong>
           <p>
-            Fehler sind keine Minuspunkte, sondern Wegweiser für neues Wachstum. Je öfter du ein Muster
-            spielerisch anwendest, desto tiefer wurzelt es.
+            Mistakes aren't deductions — they're signposts for new growth. The more you explore a pattern
+            playfully, the deeper its roots grow.
           </p>
         </div>
       </div>

@@ -15,14 +15,14 @@ export function ConfidenceBarometer({
   showAhaTip = false,
 }: ConfidenceBarometerProps) {
   return (
-    <div className="confidence-barometer" role="group" aria-label="Wie sicher bist du dir?">
+    <div className="confidence-barometer" role="group" aria-label="How confident do you feel?">
       <div className="confidence-header">
-        <span className="confidence-eyebrow">DEIN BAUCHGEFÜHL</span>
+        <span className="confidence-eyebrow">YOUR GUT FEELING</span>
         <span className="confidence-hint">
-          {selected === 'wobbly' && '🌱 Kein Problem! Wir festigen dieses Muster morgen automatisch.'}
-          {selected === 'thinking' && '🌿 Super – mit etwas Nachdenken richtig eingeklickt.'}
-          {selected === 'clear' && '🌳 Glasklar! Dieses Muster sitzt fest im Gedächtnis.'}
-          {!selected && 'Tippe, wie leicht dir die Antwort fiel:'}
+          {selected === 'wobbly' && '🌱 No problem! We will reinforce this pattern automatically tomorrow.'}
+          {selected === 'thinking' && '🌿 Great – locked in with a bit of thought.'}
+          {selected === 'clear' && '🌳 Crystal clear! This pattern is firmly anchored.'}
+          {!selected && 'Tap how easy this answer felt:'}
         </span>
       </div>
 
@@ -36,8 +36,8 @@ export function ConfidenceBarometer({
         >
           <span className="sprout-icon"><Sprout size={16} /></span>
           <span className="pill-text">
-            <strong>Wackelig</strong>
-            <small>Fast geraten</small>
+            <strong>Unsure</strong>
+            <small>Mostly guessed</small>
           </span>
         </button>
 
@@ -50,8 +50,8 @@ export function ConfidenceBarometer({
         >
           <span className="sprout-icon"><Leaf size={16} /></span>
           <span className="pill-text">
-            <strong>Geht so</strong>
-            <small>Mit Überlegen</small>
+            <strong>Thinking</strong>
+            <small>Needed thought</small>
           </span>
         </button>
 
@@ -64,8 +64,8 @@ export function ConfidenceBarometer({
         >
           <span className="sprout-icon"><TreeDeciduous size={16} /></span>
           <span className="pill-text">
-            <strong>Glasklar</strong>
-            <small>Sofort gesehen</small>
+            <strong>Crystal clear</strong>
+            <small>Spotted right away</small>
           </span>
         </button>
       </div>
@@ -73,7 +73,7 @@ export function ConfidenceBarometer({
       {showAhaTip && selected === 'wobbly' && (
         <div className="wobbly-micro-hint">
           <span>💡</span>
-          <p>Tipp: Schau auf die Farbbausteine — Orange ist immer dein Verbanker!</p>
+          <p>Tip: Look at the colored blocks — orange is always your verb anchor!</p>
         </div>
       )}
     </div>

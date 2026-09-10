@@ -92,20 +92,20 @@ export function PracticeSession({
 
   if (finished) {
     const total = unit.exercises.length
-    const message = score === total ? 'Wunderbar!' : score >= Math.ceil(total / 2) ? 'Fast gemeistert!' : 'Ein guter Anfang!'
+    const message = score === total ? 'Wonderful!' : score >= Math.ceil(total / 2) ? 'Almost there!' : 'A good start!'
     return (
       <div className={compact ? 'practice-finish compact' : 'practice-finish'}>
         <div className="celebration" aria-hidden="true"><i>✦</i><i>●</i><i>◆</i><i>✦</i><i>●</i></div>
         <span className="finish-badge"><Sparkles size={28} /></span>
-        <span className="finish-kicker">RUNDE BEENDET</span>
+        <span className="finish-kicker">ROUND COMPLETED</span>
         <h2>{message}</h2>
-        <p>Du hast <strong>{score} von {total}</strong> Aufgaben richtig gelöst.</p>
+        <p>You solved <strong>{score} of {total}</strong> exercises correctly.</p>
         <div className="score-seeds">
           {Array.from({ length: total }, (_, index) => <span key={index} className={index < score ? 'earned' : ''}>✦</span>)}
         </div>
         <div className="finish-actions">
-          <button type="button" className="secondary-button" onClick={restart}><RotateCcw size={17} /> Noch einmal</button>
-          {onBackToLesson && <button type="button" className="primary-button" onClick={onBackToLesson}>Zum Kapitel <ArrowRight size={17} /></button>}
+          <button type="button" className="secondary-button" onClick={restart}><RotateCcw size={17} /> Try again</button>
+          {onBackToLesson && <button type="button" className="primary-button" onClick={onBackToLesson}>Back to chapter <ArrowRight size={17} /></button>}
         </div>
       </div>
     )
@@ -115,10 +115,10 @@ export function PracticeSession({
     <div className={compact ? 'practice-session compact' : 'practice-session'}>
       <div className="practice-progress-head">
         <div>
-          <span>AUFGABE {questionIndex + 1} VON {unit.exercises.length}</span>
-          <strong>{exercise.type === 'arrange' ? 'Satz-Puzzle' : exercise.type === 'fill' ? 'Lücke füllen' : 'Muster wählen'}</strong>
+          <span>EXERCISE {questionIndex + 1} OF {unit.exercises.length}</span>
+          <strong>{exercise.type === 'arrange' ? 'Sentence Puzzle' : exercise.type === 'fill' ? 'Fill the Blank' : 'Choose Pattern'}</strong>
         </div>
-        <div className="practice-score"><span>{score}</span> richtig</div>
+        <div className="practice-score"><span>{score}</span> correct</div>
       </div>
       <div className="question-dots">
         {unit.exercises.map((_, index) => (
@@ -126,22 +126,24 @@ export function PracticeSession({
         ))}
       </div>
 
-      <div key={`${unit.id}-${questionIndex}`} className="question-area notranslate" translate="no" lang="de">
+      <div key={`${unit.id}-${questionIndex}`} className="question-area" lang="en">
         <div className="question-prompt">
           <span className="question-number">{String(questionIndex + 1).padStart(2, '0')}</span>
-          <div><small>{exercise.prompt}</small>{exercise.type !== 'arrange' && <h3>{exercise.sentence}</h3>}</div>
+          <div><small>{exercise.prompt}</small>{exercise.type !== 'arrange' && <h3 lang="de" translate="no">{exercise.sentence}</h3>}</div>
         </div>
 
         {exercise.type === 'arrange' ? (
           <div className="builder-wrap">
             <div className={placedTokens.length ? 'sentence-dropzone has-tokens' : 'sentence-dropzone'}>
-              {placedTokens.length === 0 && <span className="drop-hint">Tippe die Wörter in der richtigen Reihenfolge an</span>}
+              {placedTokens.length === 0 && <span className="drop-hint">Tap words in the correct order</span>}
               {placedTokens.map((token, index) => (
                 <button
                   key={token.id}
                   type="button"
                   className={answered ? (isCorrect ? 'word-token placed correct' : 'word-token placed wrong') : 'word-token placed'}
                   onClick={() => !answered && setPlacedIds((current) => current.filter((id) => id !== token.id))}
+                  lang="de"
+                  translate="no"
                 >
                   <small>{index + 1}</small>{token.word}
                 </button>
@@ -149,13 +151,13 @@ export function PracticeSession({
             </div>
             <div className="token-pool">
               {availableTokens.map((token) => (
-                <button key={token.id} type="button" className="word-token" disabled={answered} onClick={() => setPlacedIds((current) => [...current, token.id])}>
+                <button key={token.id} type="button" className="word-token" lang="de" translate="no" disabled={answered} onClick={() => setPlacedIds((current) => [...current, token.id])}>
                   {token.word}
                 </button>
               ))}
             </div>
             {placedIds.length > 0 && !answered && (
-              <button className="clear-order" type="button" onClick={() => setPlacedIds([])}><RotateCcw size={14} /> Neu ordnen</button>
+              <button className="clear-order" type="button" onClick={() => setPlacedIds([])}><RotateCcw size={14} /> Reset order</button>
             )}
           </div>
         ) : (
@@ -166,7 +168,7 @@ export function PracticeSession({
               if (answered && selectedChoice === choice && choice !== exercise.answer) className = 'choice-option wrong'
               return (
                 <button key={choice} type="button" className={className} disabled={answered} aria-pressed={selectedChoice === choice} onClick={() => setSelectedChoice(choice)}>
-                  <span>{String.fromCharCode(65 + index)}</span><strong>{choice}</strong>
+                  <span>{String.fromCharCode(65 + index)}</span><strong lang="de" translate="no">{choice}</strong>
                   {answered && choice === exercise.answer && <Check size={19} />}
                   {answered && selectedChoice === choice && choice !== exercise.answer && <X size={19} />}
                 </button>
@@ -177,12 +179,12 @@ export function PracticeSession({
       </div>
 
       {answered && (
-        <div className={isCorrect ? 'answer-feedback correct notranslate' : 'answer-feedback wrong notranslate'} role="status" translate="no" lang="de">
+        <div className={isCorrect ? 'answer-feedback correct' : 'answer-feedback wrong'} role="status">
           <span className="feedback-icon">{isCorrect ? <Check size={21} /> : <Lightbulb size={21} />}</span>
           <div>
             <strong>{isCorrect
-              ? feedbackTone === 'direct' ? 'Richtig.' : 'Genau so!'
-              : feedbackTone === 'direct' ? 'Noch nicht. Hier ist die Regel:' : 'Fast – schau auf das Muster.'}</strong>
+              ? feedbackTone === 'direct' ? 'Correct.' : 'Spot on!'
+              : feedbackTone === 'direct' ? 'Not quite. Here is the rule:' : 'Close – look at the pattern.'}</strong>
             <p>{exercise.explanation}</p>
           </div>
         </div>
@@ -202,14 +204,14 @@ export function PracticeSession({
 
       <div className="practice-actions">
         {onBackToLesson ? (
-          <button type="button" className="quiet-button" onClick={onBackToLesson}><ArrowLeft size={16} /> Zurück</button>
+          <button type="button" className="quiet-button" onClick={onBackToLesson}><ArrowLeft size={16} /> Back</button>
         ) : <span />}
         {answered ? (
           <button type="button" className="primary-button" onClick={nextQuestion}>
-            {questionIndex === unit.exercises.length - 1 ? 'Ergebnis' : 'Nächste Aufgabe'} <ArrowRight size={17} />
+            {questionIndex === unit.exercises.length - 1 ? 'See results' : 'Next exercise'} <ArrowRight size={17} />
           </button>
         ) : (
-          <button type="button" className="primary-button" disabled={!canCheck} onClick={checkAnswer}>Prüfen <Check size={17} /></button>
+          <button type="button" className="primary-button" disabled={!canCheck} onClick={checkAnswer}>Check <Check size={17} /></button>
         )}
       </div>
     </div>

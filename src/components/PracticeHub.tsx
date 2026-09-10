@@ -20,7 +20,7 @@ export function PracticeHub({ progress, onRecordAnswer, onGameComplete, initialG
   if (mode !== 'menu') {
     return (
       <div className="page practice-page game-open">
-        <button className="back-button game-back" type="button" onClick={() => setMode('menu')}><ArrowLeft size={18} /> Spielplatz</button>
+        <button className="back-button game-back" type="button" onClick={() => setMode('menu')}><ArrowLeft size={18} /> Playground</button>
         {mode === 'articles' && <ArticleGame onRecord={onRecordAnswer} onComplete={onGameComplete} />}
         {mode === 'quick' && <QuickGame onRecord={onRecordAnswer} onComplete={onGameComplete} />}
         {mode === 'sentences' && <SentenceGame onRecord={onRecordAnswer} onComplete={onGameComplete} />}
@@ -32,50 +32,50 @@ export function PracticeHub({ progress, onRecordAnswer, onGameComplete, initialG
     <div className="page practice-page">
       <header className="practice-hub-header">
         <div>
-          <span className="section-kicker">GRAMMATIK-SPIELPLATZ</span>
-          <h1>Kurz spielen. Viel merken.</h1>
-          <p>Keine langen Tests – nur kleine Runden mit direktem Aha-Feedback.</p>
+          <span className="section-kicker">GRAMMAR PLAYGROUND</span>
+          <h1>Play briefly. Remember deeply.</h1>
+          <p>No lengthy tests – just quick rounds with immediate aha feedback.</p>
         </div>
         <div className="practice-mascot" aria-hidden="true">
-          <span>Los!</span>
+          <span>Go!</span>
           <div><i>•</i><i>•</i><b>⌣</b></div>
         </div>
       </header>
 
       <div className="arcade-stats">
-        <div><span className="stat-icon coral"><Zap size={20} /></span><p><strong>{progress.practiceAnswered}</strong><small>Antworten</small></p></div>
-        <div><span className="stat-icon green"><Trophy size={20} /></span><p><strong>{accuracy}%</strong><small>Trefferquote</small></p></div>
-        <div><span className="stat-icon yellow"><Leaf size={20} /></span><p><strong>{progress.leaves}</strong><small>Blätter</small></p></div>
+        <div><span className="stat-icon coral"><Zap size={20} /></span><p><strong>{progress.practiceAnswered}</strong><small>Answers</small></p></div>
+        <div><span className="stat-icon green"><Trophy size={20} /></span><p><strong>{accuracy}%</strong><small>Accuracy</small></p></div>
+        <div><span className="stat-icon yellow"><Leaf size={20} /></span><p><strong>{progress.leaves}</strong><small>Leaves</small></p></div>
       </div>
 
       <section className="game-section">
         <div className="section-heading">
-          <div><span className="section-kicker">WÄHLE EIN SPIEL</span><h2>Womit willst du anfangen?</h2></div>
-          <span className="time-chip"><Clock3 size={15} /> 2–5 Min.</span>
+          <div><span className="section-kicker">CHOOSE A GAME</span><h2>Where would you like to start?</h2></div>
+          <span className="time-chip"><Clock3 size={15} /> 2–5 min</span>
         </div>
         <div className="game-card-grid">
           <button className="game-card article-game-card" type="button" onClick={() => setMode('articles')}>
             <div className="game-art article-art">
-              <span className="article-chip der">der</span><span className="noun-chip">Apfel</span>
-              <span className="article-chip die">die</span><span className="noun-chip small">Lampe</span>
+              <span className="article-chip der" lang="de" translate="no">der</span><span className="noun-chip" lang="de" translate="no">Apfel</span>
+              <span className="article-chip die" lang="de" translate="no">die</span><span className="noun-chip small" lang="de" translate="no">Lampe</span>
               <i>?</i>
             </div>
-            <div className="game-copy"><span className="game-label">FARB-SPIEL · 6 KARTEN</span><strong className="game-card-title">Artikel-Garten</strong><p>Ordne Nomen blitzschnell zu der, die oder das.</p><span className="play-game">Spielen <ArrowRight size={17} /></span></div>
+            <div className="game-copy"><span className="game-label">COLOR GAME · 6 CARDS</span><strong className="game-card-title">Article Garden</strong><p>Match nouns to der, die, or das in a flash.</p><span className="play-game">Play <ArrowRight size={17} /></span></div>
           </button>
           <button className="game-card quick-game-card" type="button" onClick={() => setMode('quick')}>
             <div className="game-art quick-art"><span>A</span><span>B</span><span>C</span><i><Timer size={29} /></i></div>
-            <div className="game-copy"><span className="game-label">MIX · 5 FRAGEN</span><strong className="game-card-title">Blitz-Mix</strong><p>Fünf Muster quer durch deinen ganzen A1-Weg.</p><span className="play-game">Spielen <ArrowRight size={17} /></span></div>
+            <div className="game-copy"><span className="game-label">MIX · 5 QUESTIONS</span><strong className="game-card-title">Quick Mix</strong><p>Five patterns across your entire A1 journey.</p><span className="play-game">Play <ArrowRight size={17} /></span></div>
           </button>
           <button className="game-card sentence-game-card" type="button" onClick={() => setMode('sentences')}>
-            <div className="game-art sentence-art"><span>Heute</span><span>lerne</span><span>ich</span><span>Deutsch</span><i>1 → 2 → 3 → 4</i></div>
-            <div className="game-copy"><span className="game-label">PUZZLE · 5 SÄTZE</span><strong className="game-card-title">Satz-Werkstatt</strong><p>Setze Wortbausteine in die richtige Spur.</p><span className="play-game">Spielen <ArrowRight size={17} /></span></div>
+            <div className="game-art sentence-art"><span lang="de" translate="no">Heute</span><span lang="de" translate="no">lerne</span><span lang="de" translate="no">ich</span><span lang="de" translate="no">Deutsch</span><i>1 → 2 → 3 → 4</i></div>
+            <div className="game-copy"><span className="game-label">PUZZLE · 5 SENTENCES</span><strong className="game-card-title">Sentence Workshop</strong><p>Snap word blocks into the right order.</p><span className="play-game">Play <ArrowRight size={17} /></span></div>
           </button>
         </div>
       </section>
 
       <section className="practice-tip-banner">
         <span><Sparkles size={21} /></span>
-        <div><strong>So bleibt mehr hängen</strong><p>Spiele lieber jeden Tag eine 3-Minuten-Runde als einmal pro Woche 30 Minuten.</p></div>
+        <div><strong>How to make it stick</strong><p>A 3-minute round every day is far better than 30 minutes once a week.</p></div>
       </section>
     </div>
   )
@@ -135,25 +135,25 @@ function ArticleGame({ onRecord, onComplete }: RecordProps) {
     startedAt.current = learningClock()
   }
 
-  if (finished) return <GameResult title="Artikel-Garten" score={score} total={cards.length} onRestart={restart} />
+  if (finished) return <GameResult title="Article Garden" score={score} total={cards.length} onRestart={restart} />
 
   return (
-    <GameBoard key={`${index}-${card.noun}`} kicker="ARTIKEL-GARTEN" title="Welches Etikett gehört zum Nomen?" progress={index + 1} total={cards.length} score={score}>
+    <GameBoard key={`${index}-${card.noun}`} kicker="ARTICLE GARDEN" title="Which article belongs to this noun?" progress={index + 1} total={cards.length} score={score}>
       <div className="noun-stage">
         <span className="noun-emoji">{card.emoji}</span>
         <small>{card.hint.toUpperCase()}</small>
         <h2 lang="de" translate="no">{`___ ${card.noun}`}</h2>
-        <p>Tippe auf die richtige Farbe.</p>
+        <p>Tap the correct color.</p>
       </div>
       <div className="article-options">
         {['der', 'die', 'das'].map((article) => {
           let className = `article-option ${article}`
           if (answered && article === card.article) className += ' correct'
           if (answered && article === selected && article !== card.article) className += ' wrong'
-          return <button key={article} className={className} type="button" disabled={answered} aria-pressed={selected === article} onClick={() => choose(article)}><span>{article}</span><small>{article === 'der' ? 'MASKULIN' : article === 'die' ? 'FEMININ' : 'NEUTRAL'}</small>{answered && article === card.article && <Check size={19} />}{answered && article === selected && article !== card.article && <X size={19} />}</button>
+          return <button key={article} className={className} type="button" disabled={answered} aria-pressed={selected === article} onClick={() => choose(article)}><span lang="de" translate="no">{article}</span><small>{article === 'der' ? 'MASCULINE' : article === 'die' ? 'FEMININE' : 'NEUTER'}</small>{answered && article === card.article && <Check size={19} />}{answered && article === selected && article !== card.article && <X size={19} />}</button>
         })}
       </div>
-      {answered && <div className={selected === card.article ? 'game-feedback correct' : 'game-feedback wrong'} role="status" aria-live="polite"><strong>{selected === card.article ? 'Genau!' : `Es heißt ${card.article} ${card.noun}.`}</strong><p>Merk dir Wort und Artikel als einen einzigen farbigen Block.</p><button type="button" onClick={next}>{index === cards.length - 1 ? 'Ergebnis' : 'Nächste Karte'} <ArrowRight size={16} /></button></div>}
+      {answered && <div className={selected === card.article ? 'game-feedback correct' : 'game-feedback wrong'} role="status" aria-live="polite"><strong>{selected === card.article ? 'Spot on!' : <span>It's <span lang="de" translate="no">{card.article} {card.noun}</span>.</span>}</strong><p>Remember the word and article as one single colored block.</p><button type="button" onClick={next}>{index === cards.length - 1 ? 'See results' : 'Next card'} <ArrowRight size={16} /></button></div>}
     </GameBoard>
   )
 }
@@ -195,23 +195,23 @@ function QuickGame({ onRecord, onComplete }: RecordProps) {
     startedAt.current = learningClock()
   }
 
-  if (finished) return <GameResult title="Blitz-Mix" score={score} total={questions.length} onRestart={restart} />
+  if (finished) return <GameResult title="Quick Mix" score={score} total={questions.length} onRestart={restart} />
 
   return (
-    <GameBoard key={`${index}-${question.unitId}`} kicker={`KAPITEL ${curriculum.find((unit) => unit.id === question.unitId)?.number ?? ''} · BLITZ-MIX`} title={question.prompt} progress={index + 1} total={questions.length} score={score}>
+    <GameBoard key={`${index}-${question.unitId}`} kicker={`CHAPTER ${curriculum.find((unit) => unit.id === question.unitId)?.number ?? ''} · QUICK MIX`} title={question.prompt} progress={index + 1} total={questions.length} score={score}>
       <div className="quick-question">
         <small>{question.unitTitle}</small>
-        <h2>{question.sentence ?? question.prompt}</h2>
+        <h2 lang="de" translate="no">{question.sentence ?? question.prompt}</h2>
       </div>
       <div className="quick-options">
         {question.choices.map((choice, choiceIndex) => {
           let className = selected === choice ? 'selected' : ''
           if (answered && choice === question.answer) className = 'correct'
           if (answered && selected === choice && choice !== question.answer) className = 'wrong'
-          return <button key={choice} className={className} type="button" disabled={answered} aria-pressed={selected === choice} onClick={() => choose(choice)}><span>{String.fromCharCode(65 + choiceIndex)}</span><strong>{choice}</strong>{answered && choice === question.answer && <Check size={18} />}</button>
+          return <button key={choice} className={className} type="button" disabled={answered} aria-pressed={selected === choice} onClick={() => choose(choice)}><span>{String.fromCharCode(65 + choiceIndex)}</span><strong lang="de" translate="no">{choice}</strong>{answered && choice === question.answer && <Check size={18} />}</button>
         })}
       </div>
-      {answered && <div className={selected === question.answer ? 'game-feedback correct' : 'game-feedback wrong'} role="status" aria-live="polite"><strong>{selected === question.answer ? 'Muster erkannt!' : 'Guter Versuch.'}</strong><p>{question.explanation}</p><button type="button" onClick={next}>{index === questions.length - 1 ? 'Ergebnis' : 'Weiter'} <ArrowRight size={16} /></button></div>}
+      {answered && <div className={selected === question.answer ? 'game-feedback correct' : 'game-feedback wrong'} role="status" aria-live="polite"><strong>{selected === question.answer ? 'Pattern spotted!' : 'Good try!'}</strong><p>{question.explanation}</p><button type="button" onClick={next}>{index === questions.length - 1 ? 'See results' : 'Continue'} <ArrowRight size={16} /></button></div>}
     </GameBoard>
   )
 }
@@ -264,19 +264,19 @@ function SentenceGame({ onRecord, onComplete }: RecordProps) {
     startedAt.current = learningClock()
   }
 
-  if (finished) return <GameResult title="Satz-Werkstatt" score={score} total={puzzles.length} onRestart={restart} />
+  if (finished) return <GameResult title="Sentence Workshop" score={score} total={puzzles.length} onRestart={restart} />
 
   return (
-    <GameBoard key={`${index}-${puzzle.unit.id}`} kicker={`KAPITEL ${puzzle.unit.number} · SATZ-WERKSTATT`} title={puzzle.exercise.prompt} progress={index + 1} total={puzzles.length} score={score}>
+    <GameBoard key={`${index}-${puzzle.unit.id}`} kicker={`CHAPTER ${puzzle.unit.number} · SENTENCE WORKSHOP`} title={puzzle.exercise.prompt} progress={index + 1} total={puzzles.length} score={score}>
       <div className="arcade-builder">
-        <div className="builder-rail"><span>START</span><i /><i /><i /><span>ZIEL</span></div>
+        <div className="builder-rail"><span>START</span><i /><i /><i /><span>FINISH</span></div>
         <div className="arcade-dropzone">
-          {placed.length === 0 && <p>Tippe unten auf den ersten Baustein</p>}
-          {placed.map((token, tokenIndex) => <button type="button" key={token.id} className={answered ? (correct ? 'correct' : 'wrong') : ''} disabled={answered} onClick={() => setOrder((current) => current.filter((id) => id !== token.id))}><small>{tokenIndex + 1}</small>{token.word}</button>)}
+          {placed.length === 0 && <p>Tap the first block below</p>}
+          {placed.map((token, tokenIndex) => <button type="button" key={token.id} className={answered ? (correct ? 'correct' : 'wrong') : ''} disabled={answered} onClick={() => setOrder((current) => current.filter((id) => id !== token.id))} lang="de" translate="no"><small>{tokenIndex + 1}</small>{token.word}</button>)}
         </div>
-        <div className="arcade-token-pool">{available.map((token) => <button type="button" key={token.id} disabled={answered} onClick={() => setOrder((current) => [...current, token.id])}>{token.word}</button>)}</div>
+        <div className="arcade-token-pool">{available.map((token) => <button type="button" key={token.id} disabled={answered} onClick={() => setOrder((current) => [...current, token.id])} lang="de" translate="no">{token.word}</button>)}</div>
       </div>
-      {answered ? <div className={correct ? 'game-feedback correct' : 'game-feedback wrong'} role="status" aria-live="polite"><strong>{correct ? 'Der Satz fährt!' : 'Die Spur braucht noch Ordnung.'}</strong><p>{puzzle.exercise.explanation}</p><button type="button" onClick={next}>{index === puzzles.length - 1 ? 'Ergebnis' : 'Nächster Satz'} <ArrowRight size={16} /></button></div> : <div className="game-check-row"><button type="button" className="secondary-button" disabled={!order.length} onClick={() => setOrder([])}><RotateCcw size={16} /> Leeren</button><button type="button" className="primary-button" disabled={order.length !== tokens.length} onClick={check}>Satz prüfen <Check size={17} /></button></div>}
+      {answered ? <div className={correct ? 'game-feedback correct' : 'game-feedback wrong'} role="status" aria-live="polite"><strong>{correct ? 'The sentence rolls smoothly!' : 'The track still needs work.'}</strong><p>{puzzle.exercise.explanation}</p><button type="button" onClick={next}>{index === puzzles.length - 1 ? 'See results' : 'Next sentence'} <ArrowRight size={16} /></button></div> : <div className="game-check-row"><button type="button" className="secondary-button" disabled={!order.length} onClick={() => setOrder([])}><RotateCcw size={16} /> Reset</button><button type="button" className="primary-button" disabled={order.length !== tokens.length} onClick={check}>Check sentence <Check size={17} /></button></div>}
     </GameBoard>
   )
 }
@@ -292,10 +292,10 @@ type GameBoardProps = {
 
 function GameBoard({ kicker, title, progress, total, score, children }: GameBoardProps) {
   return (
-    <section className="game-board notranslate" translate="no" lang="de">
+    <section className="game-board" lang="en">
       <header className="game-board-head">
         <div><span>{kicker}</span><h1>{title}</h1></div>
-        <div className="board-score"><Trophy size={17} /><strong>{score}</strong><small>Punkte</small></div>
+        <div className="board-score"><Trophy size={17} /><strong>{score}</strong><small>points</small></div>
       </header>
       <div className="game-progress"><span>{`${progress}/${total}`}</span><div>{Array.from({ length: total }, (_, index) => <i key={index} className={index < progress ? 'active' : ''} />)}</div></div>
       {children}
@@ -310,11 +310,11 @@ function GameResult({ title, score, total, onRestart }: GameResultProps) {
     <section className="game-result">
       <div className="result-rays" aria-hidden="true">✦</div>
       <span className="result-cup"><Trophy size={36} /></span>
-      <small>{title.toUpperCase()} · GESCHAFFT</small>
-      <h1>{score === total ? 'Perfekte Runde!' : score >= total / 2 ? 'Schön gespielt!' : 'Muster wachsen langsam.'}</h1>
-      <p><strong>{score} von {total}</strong> richtig – und jede Antwort hat deinen Garten ein Stück wachsen lassen.</p>
+      <small>{title.toUpperCase()} · COMPLETED</small>
+      <h1>{score === total ? 'Perfect round!' : score >= total / 2 ? 'Great job!' : 'Patterns take time to grow.'}</h1>
+      <p><strong>{score} of {total}</strong> correct – and every answer helps your garden grow.</p>
       <div className="result-bar"><span style={{ width: `${(score / total) * 100}%` }} /></div>
-      <button type="button" className="primary-button" onClick={onRestart}><RotateCcw size={17} /> Noch eine Runde</button>
+      <button type="button" className="primary-button" onClick={onRestart}><RotateCcw size={17} /> Play another round</button>
     </section>
   )
 }

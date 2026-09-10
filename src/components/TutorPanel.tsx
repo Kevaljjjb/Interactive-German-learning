@@ -60,13 +60,13 @@ export function TutorPanel({ unit, progress, style }: Props) {
     <section className="tutor-panel" aria-labelledby="tutor-heading">
       <div className="tutor-heading">
         <span className="tutor-logo"><BrainCircuit size={24} /></span>
-        <div><span className="section-kicker">OPTIONAL · LIVE AI</span><h2 id="tutor-heading">Eine andere Erklärung, nur für dich.</h2></div>
+        <div><span className="section-kicker">OPTIONAL · LIVE AI</span><h2 id="tutor-heading">A different explanation, just for you.</h2></div>
         <span className="tutor-status">{status === null ? 'Checking connection…' : status.available ? status.model : 'Not connected'}</span>
       </div>
       <p>Stuck? Ask for a picture in words, another example, or a tiny challenge. The tutor receives only this chapter, its answer counts, your selected visual format, and your question—not your name or full history.</p>
       {!status?.available && status !== null && <div className="tutor-setup"><ShieldCheck size={18} /><div><strong>Connect a model when you’re ready.</strong><p>Set AI_PROVIDER, AI_MODEL and AI_API_KEY in <code>.env.local</code>, then restart the local server. All lessons work without AI. See README.md.</p></div></div>}
       <div className="tutor-controls">
-        <label>Explanation language<select value={language} onChange={event => setLanguage(event.target.value as 'en' | 'de')}><option value="en">English + German examples</option><option value="de">Einfaches Deutsch</option></select></label>
+        <label>Explanation language<select value={language} onChange={event => setLanguage(event.target.value as 'en' | 'de')}><option value="en">English + German examples</option><option value="de">Simple German</option></select></label>
         <label className="tutor-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> I agree to send this limited context to the configured AI provider. API usage may cost money.</label>
       </div>
       <label className="tutor-input-label" htmlFor="tutor-question">Your question or attempted answer (optional)</label>

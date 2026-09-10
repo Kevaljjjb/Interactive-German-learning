@@ -40,45 +40,45 @@ const defaultPillars: Record<CognitivePillar, LearningFingerprint['pillars'][Cog
   verb_position: {
     score: 0,
     level: 'seed',
-    label: 'Satzbau',
-    germanName: 'Verbmotor (Position 2)',
-    description: 'Das finite Verb fährt im Aussagesatz immer auf Gleis 2.',
+    label: 'Sentence Structure',
+    germanName: 'Verb Engine (Position 2)',
+    description: 'In a main statement, the conjugated verb always sits in Position 2.',
     icon: '🚂',
     wobblyCount: 0,
   },
   article_memory: {
     score: 0,
     level: 'seed',
-    label: 'Artikel',
-    germanName: 'Farb-Gedächtnis (der / die / das)',
-    description: 'Intuitive Zuordnung durch konsistente Farbkodierung.',
+    label: 'Articles',
+    germanName: 'Article Memory (der / die / das)',
+    description: 'Intuitive gender memory through consistent color coding.',
     icon: '🎨',
     wobblyCount: 0,
   },
   bracket_vision: {
     score: 0,
     level: 'seed',
-    label: 'Klammer',
-    germanName: 'Klammer-Blick (Satzklammer)',
-    description: 'Trennbare Vorsilben und Modalverben umschließen den Satz.',
+    label: 'Sentence Bracket',
+    germanName: 'Sentence Bracket',
+    description: 'Separable prefixes and modal verbs bracket the sentence.',
     icon: '🪝',
     wobblyCount: 0,
   },
   case_compass: {
     score: 0,
     level: 'seed',
-    label: 'Fälle',
-    germanName: 'Fälle-Kompass (Akkusativ & Dativ)',
-    description: 'Richtungsgefühl für Objektveränderungen (der → den / dem).',
+    label: 'Cases',
+    germanName: 'Case Compass (Accusative & Dative)',
+    description: 'Directional instinct for object changes (der → den / dem).',
     icon: '🧭',
     wobblyCount: 0,
   },
   pattern_switch: {
     score: 0,
     level: 'seed',
-    label: 'Schalter',
-    germanName: 'Muster-Schalter (Frage & Negation)',
-    description: 'Schneller Wechsel zwischen Aussage, Ja/Nein-Frage und Verneinung.',
+    label: 'Pattern Switch',
+    germanName: 'Pattern Switch (Questions & Negation)',
+    description: 'Quick shifts between statements, questions, and negation.',
     icon: '⚡',
     wobblyCount: 0,
   },
@@ -127,7 +127,12 @@ function loadFingerprint(): LearningFingerprint {
   const loaded = loadValue(FINGERPRINT_KEY, defaultFingerprint)
   const pillars = { ...defaultPillars }
   for (const key of Object.keys(defaultPillars) as CognitivePillar[]) {
-    pillars[key] = { ...defaultPillars[key], ...(loaded.pillars?.[key] ?? {}) }
+    pillars[key] = {
+      ...defaultPillars[key], ...(loaded.pillars?.[key] ?? {}),
+      label: defaultPillars[key].label,
+      germanName: defaultPillars[key].germanName,
+      description: defaultPillars[key].description,
+    }
   }
   return { ...defaultFingerprint, ...loaded, pillars }
 }
@@ -233,24 +238,24 @@ function buildDailyPlan(
       ? challengeMode
       : (profile.modes[0] ?? 'visual'))
   const playTitle = preferredMode === 'building'
-    ? 'Ernte: Satz-Werkstatt'
+    ? 'Harvest: Sentence Workshop'
     : preferredMode === 'visual'
-      ? 'Ernte: Artikel-Garten'
-      : 'Ernte: Blitz-Mix'
+      ? 'Harvest: Article Garden'
+      : 'Harvest: Quick Mix'
   const playSubtitle = preferredMode === 'building'
-    ? 'Wortbausteine ordnen – deine bisher stärkste Lernspur'
+    ? 'Arrange word blocks – your strongest learning mode so far'
     : preferredMode === 'visual'
-      ? 'Artikel mit Farbe und Form im Gedächtnis verankern'
-      : 'Beispiele vergleichen und Muster schnell wiedererkennen'
+      ? 'Anchor articles with color and shape in memory'
+      : 'Compare examples and spot patterns quickly'
 
   const slots: DailySlot[] = [
     {
       id: 'slot-warmup',
       type: 'warmup',
-      title: reviewUnit ? `Boden bereiten: ${reviewUnit.title}` : 'Garten-Start: Farb-Check',
+      title: reviewUnit ? `Warmup: ${reviewUnit.title}` : 'Garden Start: Color Check',
       subtitle: reviewUnit
-        ? `${wobblyItems.length || 1} unsichere ${wobblyItems.length === 1 ? 'Stelle' : 'Stellen'} kurz und visuell auffrischen`
-        : '3 schnelle Nomen im Artikel-Garten erden',
+        ? `Briefly and visually refresh ${wobblyItems.length || 1} unsure ${wobblyItems.length === 1 ? 'item' : 'items'}`
+        : 'Anchor 3 quick nouns in the Article Garden',
       durationMinutes: warmupMinutes,
       unitId: reviewUnit?.id,
       action: reviewUnit ? 'warmup' : 'game',
@@ -259,8 +264,8 @@ function buildDailyPlan(
     {
       id: 'slot-core',
       type: 'core',
-      title: `Hauptast: ${nextUnit.title}`,
-      subtitle: `Kapitel ${String(nextUnit.number).padStart(2, '0')} · ${nextUnit.rule.label}`,
+      title: `Core Branch: ${nextUnit.title}`,
+      subtitle: `Chapter ${String(nextUnit.number).padStart(2, '0')} · ${nextUnit.rule.label}`,
       durationMinutes: coreMinutes,
       unitId: nextUnit.id,
       action: 'lesson',

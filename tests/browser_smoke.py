@@ -33,18 +33,18 @@ with sync_playwright() as p:
     page.locator('.daily-slot-card.core button').click()
     state = page.evaluate("JSON.parse(localStorage.getItem('satzgarten-progress-v2'))")
     assert not state['completedDailySlotIds'] and state['leaves'] == 0
-    page.get_by_role('tab', name='Üben 3').click()
+    page.get_by_role('tab', name='Practice 3').click()
     for choice in ['A heiße', 'B kommst']:
         page.get_by_role('button', name=choice, exact=True).click()
-        page.get_by_role('button', name='Prüfen', exact=True).click()
-        page.get_by_role('button', name='Glasklar Sofort gesehen').click()
+        page.get_by_role('button', name='Check', exact=True).click()
+        page.get_by_role('button', name='Crystal clear Spotted right away').click()
         assert page.locator('.confidence-pill:disabled').count() == 3
-        page.get_by_role('button', name='Nächste Aufgabe').click()
+        page.get_by_role('button', name='Next exercise').click()
     for token in ['Heute', 'lerne', 'ich', 'Deutsch']:
         page.locator('.token-pool').get_by_role('button', name=token, exact=True).click()
-    page.get_by_role('button', name='Prüfen', exact=True).click()
-    page.get_by_role('button', name='Glasklar Sofort gesehen').click()
-    page.get_by_role('button', name='Ergebnis', exact=True).click()
+    page.get_by_role('button', name='Check', exact=True).click()
+    page.get_by_role('button', name='Crystal clear Spotted right away').click()
+    page.get_by_role('button', name='See results', exact=True).click()
     assert page.locator('.practice-finish').is_visible(), 'Result must survive completion state changes'
     state = page.evaluate("JSON.parse(localStorage.getItem('satzgarten-progress-v2'))")
     assert state['practiceAnswered'] == 3 and state['streak'] == 1
@@ -64,7 +64,7 @@ with sync_playwright() as p:
         assert noun in nouns and noun not in seen, f'Stale or incorrect noun: {noun}'
         assert page.locator('.noun-emoji').inner_text() == nouns[noun]
         assert page.locator('.game-progress > span').inner_text() == f'{index + 1}/6'
-        assert page.locator('.game-board').get_attribute('translate') == 'no'
+        assert page.locator('.noun-stage h2').get_attribute('translate') == 'no'
         assert page.locator('.article-option > span').all_text_contents() == ['der', 'die', 'das']
         seen.add(noun)
         if index == 0:
@@ -74,17 +74,17 @@ with sync_playwright() as p:
         page.locator('.article-option').first.click()
         page.locator('.game-feedback button').click()
     assert page.locator('.game-result').is_visible()
-    page.get_by_role('button', name='Noch eine Runde').click()
+    page.get_by_role('button', name='Play another round').click()
     assert page.locator('.noun-stage').is_visible()
     print('PASS: article round completion and replay, including translated-DOM recovery')
     page.locator('.side-nav button').nth(1).click()
     page.locator('.unit-card button').nth(2).click()
-    page.get_by_role('tab', name='Üben 3').click()
-    assert page.locator('.question-area').get_attribute('translate') == 'no'
+    page.get_by_role('tab', name='Practice 3').click()
+    assert page.locator('.question-prompt h3').get_attribute('translate') == 'no'
     assert page.locator('.question-prompt h3').inner_text() == 'Ich kaufe ___ Apfel.'
     assert page.locator('.choice-option strong').all_text_contents() == ['ein', 'einen', 'eine']
     page.get_by_role('button', name='B einen', exact=True).click()
-    page.get_by_role('button', name='Prüfen', exact=True).click()
+    page.get_by_role('button', name='Check', exact=True).click()
     assert page.locator('.answer-feedback.correct').is_visible()
     print('PASS: German accusative sentence and distinct article options')
     page.close()
@@ -96,8 +96,8 @@ with sync_playwright() as p:
         requests.append(route.request.post_data_json)
         route.fulfill(json={'answer': '[Ich] [sehe] [den Apfel]. The object uses den.', 'model': 'mock-model'})
     page.route('**/api/tutor', tutor_mock)
-    page.get_by_role('button', name='Weiterlernen').click()
-    page.get_by_role('tab', name='Beispiele', exact=True).click()
+    page.get_by_role('button', name='Continue learning').click()
+    page.get_by_role('tab', name='Examples', exact=True).click()
     page.wait_for_function("document.querySelector('.tutor-status').textContent === 'mock-model'")
     ask = page.get_by_role('button', name='Explain more simply')
     assert ask.is_disabled()

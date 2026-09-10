@@ -9,9 +9,9 @@ type LearningPathProps = {
 }
 
 const groups = [
-  { title: 'Wurzeln', subtitle: 'Sätze, Fragen und Dinge', range: [1, 4], color: '#78956D' },
-  { title: 'Verbindungen', subtitle: 'Zeit, Modalität und Fälle', range: [5, 8], color: '#C98755' },
-  { title: 'Freies Sprechen', subtitle: 'Menschen, Vergangenheit und Raum', range: [9, 12], color: '#6879A7' },
+  { title: 'Roots', subtitle: 'Sentences, questions, and everyday things', range: [1, 4], color: '#78956D' },
+  { title: 'Connections', subtitle: 'Time, modality, and cases', range: [5, 8], color: '#C98755' },
+  { title: 'Free Expression', subtitle: 'People, past tense, and space', range: [9, 12], color: '#6879A7' },
 ]
 
 export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
@@ -31,15 +31,15 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
     <div className="page path-page">
       <header className="path-header">
         <div className="path-title-block">
-          <span className="section-kicker">DEIN KOMPLETTER A1-WEG</span>
-          <h1>Grammatik zum Anfassen.</h1>
-          <p>12 Kapitel · {topicCount} Themen · originale Erklärungen und Übungen</p>
+          <span className="section-kicker">YOUR COMPLETE A1 JOURNEY</span>
+          <h1>Hands-on grammar.</h1>
+          <p>12 chapters · {topicCount} topics · original explanations and interactive exercises</p>
         </div>
         <div className="path-completion">
           <div className="completion-ring" style={{ background: `conic-gradient(#476F57 ${percent}%, #e7ebe5 0)` }}>
             <span>{percent}%</span>
           </div>
-          <div><strong>{progress.completedUnits.length} von 12</strong><small>Kapitel gemeistert</small></div>
+          <div><strong>{progress.completedUnits.length} of 12</strong><small>chapters mastered</small></div>
         </div>
       </header>
 
@@ -48,17 +48,17 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
           <Search size={18} />
           <input
             type="search"
-            aria-label="Thema oder Kapitel suchen"
+            aria-label="Search topic or chapter"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Thema suchen, z. B. Akkusativ …"
+            placeholder="Search topic, e.g. accusative…"
           />
-          {query && <button type="button" onClick={() => setQuery('')} aria-label="Suche leeren">×</button>}
+          {query && <button type="button" onClick={() => setQuery('')} aria-label="Clear search">×</button>}
         </label>
-        <div className="gender-legend" aria-label="Farblegende für Nomen">
-          <span><i className="legend-dot der" /> der</span>
-          <span><i className="legend-dot die" /> die</span>
-          <span><i className="legend-dot das" /> das</span>
+        <div className="gender-legend" aria-label="Color legend for noun genders">
+          <span lang="de" translate="no"><i className="legend-dot der" /> der</span>
+          <span lang="de" translate="no"><i className="legend-dot die" /> die</span>
+          <span lang="de" translate="no"><i className="legend-dot das" /> das</span>
           <span><i className="legend-dot plural" /> Plural</span>
         </div>
       </div>
@@ -66,7 +66,7 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
       {normalizedQuery ? (
         <section className="search-results">
           <div className="section-heading">
-            <div><span className="section-kicker">SUCHERGEBNIS</span><h2>{filtered.length} passende Kapitel</h2></div>
+            <div><span className="section-kicker">SEARCH RESULTS</span><h2>{filtered.length} matching {filtered.length === 1 ? 'chapter' : 'chapters'}</h2></div>
           </div>
           {filtered.length > 0 ? (
             <div className="unit-grid compact-grid">
@@ -75,7 +75,7 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
               ))}
             </div>
           ) : (
-            <div className="empty-search"><span>🌱</span><h3>Noch kein Treffer</h3><p>Versuch „Perfekt“, „Zeit“ oder „Artikel“.</p></div>
+            <div className="empty-search"><span>🌱</span><h3>No results yet</h3><p>Try “Perfekt”, “time”, or “articles”.</p></div>
           )}
         </section>
       ) : (
@@ -86,7 +86,7 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
               <section className="path-group" key={group.title}>
                 <div className="group-marker">
                   <span style={{ background: group.color }}>{groupIndex + 1}</span>
-                  <div><small>ETAPPE {groupIndex + 1}</small><h2>{group.title}</h2><p>{group.subtitle}</p></div>
+                  <div><small>STAGE {groupIndex + 1}</small><h2>{group.title}</h2><p>{group.subtitle}</p></div>
                 </div>
                 <div className="unit-grid">
                   {units.map((unit) => (
@@ -102,8 +102,8 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
       <section className="coverage-note">
         <span className="coverage-icon"><Sparkles size={22} /></span>
         <div>
-          <strong>Die wichtigsten A1-Muster – mit eigenen Beispielen.</strong>
-          <p>Orientiert an typischen A1-Themen und Netzwerk neu A1. Keine offizielle Buchzuordnung: Einzelne Vertiefungen reichen bis A2. Alle Erklärungen, Beispiele und Spiele sind neu geschrieben.</p>
+          <strong>Essential A1 grammar patterns — made clear and visual.</strong>
+          <p>Aligned with core A1 learning goals and common textbook milestones. All explanations, visual models, and interactive games are newly designed.</p>
         </div>
       </section>
     </div>
@@ -122,7 +122,7 @@ function UnitCard({ unit, progress, onOpen }: UnitCardProps) {
 
   return (
     <article className={done ? 'unit-card complete' : 'unit-card'}>
-      <button type="button" onClick={() => onOpen(unit)} aria-label={`${unit.title} öffnen`}>
+      <button type="button" onClick={() => onOpen(unit)} aria-label={`Open ${unit.title}`}>
         <div className="unit-card-top">
           <span className="unit-icon" style={{ background: unit.softColor }}><span>{unit.icon}</span></span>
           <span className="unit-index">{done ? <Check size={16} /> : String(unit.number).padStart(2, '0')}</span>
@@ -137,8 +137,8 @@ function UnitCard({ unit, progress, onOpen }: UnitCardProps) {
           {unit.topics.length > 3 && <span>+{unit.topics.length - 3}</span>}
         </div>
         <div className="unit-card-footer">
-          <span><Clock3 size={14} /> {unit.duration} Min.</span>
-          <span className="unit-status">{done ? `${score}/3 richtig` : 'Entdecken'} <ArrowRight size={16} /></span>
+          <span><Clock3 size={14} /> {unit.duration} min</span>
+          <span className="unit-status">{done ? `${score}/3 correct` : 'Explore'} <ArrowRight size={16} /></span>
         </div>
         <i className="unit-accent" style={{ background: unit.color }} />
       </button>
