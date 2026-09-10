@@ -138,11 +138,11 @@ function ArticleGame({ onRecord, onComplete }: RecordProps) {
   if (finished) return <GameResult title="Artikel-Garten" score={score} total={cards.length} onRestart={restart} />
 
   return (
-    <GameBoard kicker="ARTIKEL-GARTEN" title="Welches Etikett gehört zum Nomen?" progress={index + 1} total={cards.length} score={score}>
+    <GameBoard key={`${index}-${card.noun}`} kicker="ARTIKEL-GARTEN" title="Welches Etikett gehört zum Nomen?" progress={index + 1} total={cards.length} score={score}>
       <div className="noun-stage">
         <span className="noun-emoji">{card.emoji}</span>
         <small>{card.hint.toUpperCase()}</small>
-        <h2>___ {card.noun}</h2>
+        <h2 lang="de" translate="no">{`___ ${card.noun}`}</h2>
         <p>Tippe auf die richtige Farbe.</p>
       </div>
       <div className="article-options">
@@ -198,7 +198,7 @@ function QuickGame({ onRecord, onComplete }: RecordProps) {
   if (finished) return <GameResult title="Blitz-Mix" score={score} total={questions.length} onRestart={restart} />
 
   return (
-    <GameBoard kicker={`KAPITEL ${curriculum.find((unit) => unit.id === question.unitId)?.number ?? ''} · BLITZ-MIX`} title={question.prompt} progress={index + 1} total={questions.length} score={score}>
+    <GameBoard key={`${index}-${question.unitId}`} kicker={`KAPITEL ${curriculum.find((unit) => unit.id === question.unitId)?.number ?? ''} · BLITZ-MIX`} title={question.prompt} progress={index + 1} total={questions.length} score={score}>
       <div className="quick-question">
         <small>{question.unitTitle}</small>
         <h2>{question.sentence ?? question.prompt}</h2>
@@ -267,7 +267,7 @@ function SentenceGame({ onRecord, onComplete }: RecordProps) {
   if (finished) return <GameResult title="Satz-Werkstatt" score={score} total={puzzles.length} onRestart={restart} />
 
   return (
-    <GameBoard kicker={`KAPITEL ${puzzle.unit.number} · SATZ-WERKSTATT`} title={puzzle.exercise.prompt} progress={index + 1} total={puzzles.length} score={score}>
+    <GameBoard key={`${index}-${puzzle.unit.id}`} kicker={`KAPITEL ${puzzle.unit.number} · SATZ-WERKSTATT`} title={puzzle.exercise.prompt} progress={index + 1} total={puzzles.length} score={score}>
       <div className="arcade-builder">
         <div className="builder-rail"><span>START</span><i /><i /><i /><span>ZIEL</span></div>
         <div className="arcade-dropzone">
@@ -292,12 +292,12 @@ type GameBoardProps = {
 
 function GameBoard({ kicker, title, progress, total, score, children }: GameBoardProps) {
   return (
-    <section className="game-board">
+    <section className="game-board notranslate" translate="no" lang="de">
       <header className="game-board-head">
         <div><span>{kicker}</span><h1>{title}</h1></div>
         <div className="board-score"><Trophy size={17} /><strong>{score}</strong><small>Punkte</small></div>
       </header>
-      <div className="game-progress"><span>{progress}/{total}</span><div>{Array.from({ length: total }, (_, index) => <i key={index} className={index < progress ? 'active' : ''} />)}</div></div>
+      <div className="game-progress"><span>{`${progress}/${total}`}</span><div>{Array.from({ length: total }, (_, index) => <i key={index} className={index < progress ? 'active' : ''} />)}</div></div>
       {children}
     </section>
   )

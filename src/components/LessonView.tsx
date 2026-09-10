@@ -132,7 +132,7 @@ export function LessonView({
                   </button>
                 ))}
               </div>
-              <div className="visual-stage">
+              <div className="visual-stage notranslate" translate="no" lang="de">
                 <div className="stage-grid" />
                 <div className="visual-title"><small>JETZT SICHTBAR</small><h3>{visualState.title}</h3></div>
                 <div className="block-track" key={`${unit.id}-${visualIndex}`}>
@@ -152,7 +152,7 @@ export function LessonView({
                 <span className="rule-icon"><BookOpen size={21} /></span>
                 <div><span className="section-kicker">DIE REGEL IN KLAR</span><h2>{unit.rule.title}</h2></div>
               </div>
-              <div className="formula-strip">{unit.rule.formula}</div>
+              <div className="formula-strip notranslate" translate="no" lang="de">{unit.rule.formula}</div>
               <p>{unit.rule.body}</p>
               <div className="memory-tip"><span>🧠</span><div><strong>Merkbild</strong><p>{unit.rule.tip}</p></div></div>
             </section>
@@ -191,7 +191,7 @@ export function LessonView({
             {unit.examples.map((example, index) => (
               <article className="example-card" key={example.de}>
                 <div className="example-top"><span>{String(index + 1).padStart(2, '0')}</span><button type="button" className={speakingText === example.de ? 'speaking' : ''} onClick={() => speak(example.de)} aria-label={`Vorlesen: ${example.de}`}><Volume2 size={18} /></button></div>
-                <h3>{highlight(example.de, example.focus)}</h3>
+                <h3 className="notranslate" translate="no" lang="de">{highlight(example.de, example.focus)}</h3>
                 <p>{example.en}</p>
                 <div className="example-note"><Lightbulb size={15} /> {example.note}</div>
               </article>

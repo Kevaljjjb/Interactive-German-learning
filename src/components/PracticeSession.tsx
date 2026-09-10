@@ -126,7 +126,7 @@ export function PracticeSession({
         ))}
       </div>
 
-      <div className="question-area">
+      <div key={`${unit.id}-${questionIndex}`} className="question-area notranslate" translate="no" lang="de">
         <div className="question-prompt">
           <span className="question-number">{String(questionIndex + 1).padStart(2, '0')}</span>
           <div><small>{exercise.prompt}</small>{exercise.type !== 'arrange' && <h3>{exercise.sentence}</h3>}</div>
@@ -177,7 +177,7 @@ export function PracticeSession({
       </div>
 
       {answered && (
-        <div className={isCorrect ? 'answer-feedback correct' : 'answer-feedback wrong'} role="status">
+        <div className={isCorrect ? 'answer-feedback correct notranslate' : 'answer-feedback wrong notranslate'} role="status" translate="no" lang="de">
           <span className="feedback-icon">{isCorrect ? <Check size={21} /> : <Lightbulb size={21} />}</span>
           <div>
             <strong>{isCorrect

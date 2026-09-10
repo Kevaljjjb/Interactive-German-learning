@@ -57,13 +57,36 @@ with sync_playwright() as p:
 
     page.locator('.side-nav button').nth(2).click()
     page.locator('.article-game-card').click()
+    nouns = {'Apfel': '🍎', 'Banane': '🍌', 'Brot': '🍞', 'Tisch': '🪑', 'Lampe': '💡', 'Fenster': '🪟', 'Bahnhof': '🚉', 'Apotheke': '⚕️', 'Handy': '📱'}
+    seen = set()
     for index in range(6):
+        noun = page.locator('.noun-stage h2').inner_text().removeprefix('___ ')
+        assert noun in nouns and noun not in seen, f'Stale or incorrect noun: {noun}'
+        assert page.locator('.noun-emoji').inner_text() == nouns[noun]
+        assert page.locator('.game-progress > span').inner_text() == f'{index + 1}/6'
+        assert page.locator('.game-board').get_attribute('translate') == 'no'
+        assert page.locator('.article-option > span').all_text_contents() == ['der', 'die', 'das']
+        seen.add(noun)
+        if index == 0:
+            # Simulate a translator replacing React-owned text nodes with its own markup.
+            page.locator('.noun-stage h2').evaluate("e => { e.innerHTML = '<font>___ Bread</font>' }")
+            page.locator('.game-progress > span').evaluate("e => { e.innerHTML = '<font>1/6</font>' }")
         page.locator('.article-option').first.click()
         page.locator('.game-feedback button').click()
     assert page.locator('.game-result').is_visible()
     page.get_by_role('button', name='Noch eine Runde').click()
     assert page.locator('.noun-stage').is_visible()
-    print('PASS: article round completion and replay')
+    print('PASS: article round completion and replay, including translated-DOM recovery')
+    page.locator('.side-nav button').nth(1).click()
+    page.locator('.unit-card button').nth(2).click()
+    page.get_by_role('tab', name='Üben 3').click()
+    assert page.locator('.question-area').get_attribute('translate') == 'no'
+    assert page.locator('.question-prompt h3').inner_text() == 'Ich kaufe ___ Apfel.'
+    assert page.locator('.choice-option strong').all_text_contents() == ['ein', 'einen', 'eine']
+    page.get_by_role('button', name='B einen', exact=True).click()
+    page.get_by_role('button', name='Prüfen', exact=True).click()
+    assert page.locator('.answer-feedback.correct').is_visible()
+    print('PASS: German accusative sentence and distinct article options')
     page.close()
 
     page = open_app(browser)

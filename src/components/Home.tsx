@@ -84,7 +84,7 @@ export function Home({
           <span className="floating-leaf leaf-a">✦</span>
           <span className="floating-leaf leaf-b">●</span>
           <div className="position-flag">POSITION 2</div>
-          <div className="sentence-stack">
+          <div className="sentence-stack notranslate" translate="no" lang="de">
             <span className="hero-word green-word">ICH<small>WER?</small></span>
             <span className="hero-word coral-word">LERNE<small>VERB</small></span>
             <span className="hero-word blue-word">DEUTSCH<small>WAS?</small></span>
@@ -185,7 +185,7 @@ export function Home({
             </div>
             <h3>Was bleibt gleich?</h3>
             <p>Tippe auf „Tauschen“ und beobachte den orangefarbenen Verbblock.</p>
-            <div className="mini-track">
+            <div className="mini-track notranslate" translate="no" lang="de">
               {patternMode === 'subject' ? (
                 <><span className="tone-green">Ich<small>1</small></span><span className="tone-coral">lerne<small>2</small></span><span className="tone-blue">heute<small>3</small></span></>
               ) : (
