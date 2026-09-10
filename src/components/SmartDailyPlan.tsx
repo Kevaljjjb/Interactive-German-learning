@@ -5,7 +5,7 @@ type SmartDailyPlanProps = {
   dailyPlan: DailyPlan
   onStartSlot: (slot: DailySlot) => void
   onOpenUnit: (unitId: string) => void
-  onOpenGame: () => void
+  onOpenGame: (slot: DailySlot) => void
   onWarmup: () => void
   currentUnit?: GrammarUnit
 }
@@ -26,7 +26,7 @@ export function SmartDailyPlan({
     if (slot.action === 'lesson' && slot.unitId) {
       onOpenUnit(slot.unitId)
     } else if (slot.action === 'game') {
-      onOpenGame()
+      onOpenGame(slot)
     } else if (slot.action === 'warmup') {
       if (slot.unitId) onOpenUnit(slot.unitId)
       else onWarmup()

@@ -1,4 +1,6 @@
 export type View = 'home' | 'path' | 'practice' | 'progress'
+export type LessonTab = 'discover' | 'examples' | 'practice'
+export type GameMode = 'menu' | 'articles' | 'quick' | 'sentences'
 
 export type Tone = 'green' | 'coral' | 'blue' | 'yellow' | 'violet' | 'neutral'
 

@@ -8,7 +8,10 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ai:status": "codex login status",
+    "ai:login": "codex login --device-auth",
+    "ai:test": "node --experimental-strip-types scripts/test-codex.ts"
   },
   "dependencies": {
     "lucide-react": "^1.43.0",
@@ -16,6 +19,7 @@
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
+    "@openai/codex": "^0.154.0",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",

@@ -1,4 +1,4 @@
-import type { GrammarUnit } from '../types'
+import type { GrammarUnit } from '../types.js'
 
 export const curriculum: GrammarUnit[] = [
   {

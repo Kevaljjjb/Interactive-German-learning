@@ -3,7 +3,7 @@ import { BrainCircuit, Check, Send, ShieldCheck, Sparkles } from 'lucide-react'
 import type { GrammarUnit, ProgressState, VisualStyle } from '../types'
 
 type Props = { unit: GrammarUnit; progress: ProgressState; style: VisualStyle }
-type TutorStatus = { available: boolean; model?: string }
+type TutorStatus = { available: boolean; provider?: string; model?: string }
 
 export function TutorPanel({ unit, progress, style }: Props) {
   const [status, setStatus] = useState<TutorStatus | null>(null)
@@ -21,7 +21,7 @@ export function TutorPanel({ unit, progress, style }: Props) {
     const controller = new AbortController()
     fetch('/api/tutor/status', { signal: controller.signal })
       .then(async response => response.ok ? response.json() : { available: false })
-      .then(value => setStatus({ available: value.available === true, model: value.model }))
+      .then(value => setStatus({ available: value.available === true, provider: value.provider, model: value.model }))
       .catch(() => { if (!controller.signal.aborted) setStatus({ available: false }) })
     return () => { controller.abort(); requestRef.current?.abort() }
   }, [])
@@ -61,10 +61,10 @@ export function TutorPanel({ unit, progress, style }: Props) {
       <div className="tutor-heading">
         <span className="tutor-logo"><BrainCircuit size={24} /></span>
         <div><span className="section-kicker">OPTIONAL · LIVE AI</span><h2 id="tutor-heading">A different explanation, just for you.</h2></div>
-        <span className="tutor-status">{status === null ? 'Checking connection…' : status.available ? status.model : 'Not connected'}</span>
+        <span className="tutor-status">{status === null ? 'Checking connection…' : status.available ? `${status.provider === 'codex-cli' ? 'Codex CLI' : status.provider} · ${status.model}` : 'Not connected'}</span>
       </div>
       <p>Stuck? Ask for a picture in words, another example, or a tiny challenge. The tutor receives only this chapter, its answer counts, your selected visual format, and your question—not your name or full history.</p>
-      {!status?.available && status !== null && <div className="tutor-setup"><ShieldCheck size={18} /><div><strong>Connect a model when you’re ready.</strong><p>Set AI_PROVIDER, AI_MODEL and AI_API_KEY in <code>.env.local</code>, then restart the local server. All lessons work without AI. See README.md.</p></div></div>}
+      {!status?.available && status !== null && <div className="tutor-setup"><ShieldCheck size={18} /><div><strong>Connect a model when you’re ready.</strong><p>Run <code>npm run ai:login</code> for Codex CLI, or configure an API provider in <code>.env.local</code>, then restart Vite. All lessons work without AI.</p></div></div>}
       <div className="tutor-controls">
         <label>Explanation language<select value={language} onChange={event => setLanguage(event.target.value as 'en' | 'de')}><option value="en">English + German examples</option><option value="de">Simple German</option></select></label>
         <label className="tutor-consent"><input type="checkbox" checked={consent} onChange={event => setConsent(event.target.checked)} /> I agree to send this limited context to the configured AI provider. API usage may cost money.</label>

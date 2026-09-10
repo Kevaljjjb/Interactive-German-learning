@@ -6,6 +6,7 @@ type SidebarProps = {
   progress: ProgressState
   onNavigate: (view: View) => void
   onPersonalize: () => void
+  onOpenGuide: () => void
 }
 
 const navItems = [
@@ -15,7 +16,7 @@ const navItems = [
   { id: 'progress' as const, label: 'Progress', icon: BarChart3 },
 ]
 
-export function Sidebar({ view, progress, onNavigate, onPersonalize }: SidebarProps) {
+export function Sidebar({ view, progress, onNavigate, onPersonalize, onOpenGuide }: SidebarProps) {
   return (
     <>
       <aside className="sidebar">
@@ -46,6 +47,10 @@ export function Sidebar({ view, progress, onNavigate, onPersonalize }: SidebarPr
             )
           })}
         </nav>
+
+        <button className="sidebar-ai" type="button" onClick={onOpenGuide}>
+          <span>✦</span><span><strong>Ask the AI guide</strong><small>Find any grammar topic</small></span>
+        </button>
 
         <div className="sidebar-spacer" />
 

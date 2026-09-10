@@ -1,5 +1,5 @@
-import { ArrowLeft, ArrowRight, Check, Lightbulb, RotateCcw, Sparkles, X } from 'lucide-react'
-import { useMemo, useRef, useState } from 'react'
+import { ArrowLeft, ArrowRight, Check, Keyboard, Lightbulb, RotateCcw, Sparkles, Volume2, X } from 'lucide-react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { AnswerSignal, ConfidenceRating, Exercise, GrammarUnit } from '../types'
 import { learningClock } from '../lib/learningClock'
 import { ConfidenceBarometer } from './ConfidenceBarometer'
@@ -19,6 +19,11 @@ type Token = { id: number; word: string }
 function makeTokens(exercise: Exercise): Token[] {
   if (exercise.type !== 'arrange') return []
   return exercise.tokens.map((word, id) => ({ id, word }))
+}
+
+function completedSentence(exercise: Exercise) {
+  if (exercise.type === 'arrange') return exercise.answer.join(' ').replace(/\s+([?.!,])/g, '$1')
+  return (exercise.sentence ?? '').replace('___', exercise.answer)
 }
 
 export function PracticeSession({
@@ -41,11 +46,20 @@ export function PracticeSession({
   const [finished, setFinished] = useState(false)
   const exercise = unit.exercises[questionIndex]
   const tokens = useMemo(() => makeTokens(exercise), [exercise])
-  const placedTokens = placedIds.map((id) => tokens.find((token) => token.id === id)).filter((token): token is Token => Boolean(token))
-  const availableTokens = tokens.filter((token) => !placedIds.includes(token.id))
+  const placedTokens = useMemo(() => placedIds.map(id => tokens.find(token => token.id === id)).filter((token): token is Token => Boolean(token)), [placedIds, tokens])
+  const availableTokens = useMemo(() => tokens.filter(token => !placedIds.includes(token.id)), [placedIds, tokens])
   const canCheck = exercise.type === 'arrange' ? placedIds.length === tokens.length : selectedChoice !== ''
 
-  const checkAnswer = () => {
+  const speakAnswer = () => {
+    if (!('speechSynthesis' in window)) return
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(completedSentence(exercise))
+    utterance.lang = 'de-DE'
+    utterance.rate = 0.78
+    window.speechSynthesis.speak(utterance)
+  }
+
+  const checkAnswer = useCallback(() => {
     if (!canCheck || answered) return
     const correct = exercise.type === 'arrange'
       ? placedTokens.map((token) => token.word).join('|') === exercise.answer.join('|')
@@ -59,9 +73,9 @@ export function PracticeSession({
       responseMs: Math.round(learningClock() - startedAt.current),
       source: 'lesson',
     })
-  }
+  }, [answered, canCheck, exercise, onRecordAnswer, placedTokens, selectedChoice, unit.id])
 
-  const nextQuestion = () => {
+  const nextQuestion = useCallback(() => {
     if (!confidence) onRecordConfidence?.(unit.id, exercise.prompt, 'thinking', isCorrect)
     if (questionIndex === unit.exercises.length - 1) {
       const finalScore = score
@@ -76,7 +90,7 @@ export function PracticeSession({
     setIsCorrect(false)
     setConfidence(undefined)
     startedAt.current = learningClock()
-  }
+  }, [confidence, exercise.prompt, isCorrect, onComplete, onRecordConfidence, questionIndex, score, unit.exercises.length, unit.id])
 
   const restart = () => {
     setQuestionIndex(0)
@@ -89,6 +103,27 @@ export function PracticeSession({
     startedAt.current = learningClock()
     setFinished(false)
   }
+
+  useEffect(() => {
+    const handleKey = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement | null
+      if (document.querySelector('[aria-modal="true"]')) return
+      if (target?.closest('button, a, input, textarea, select, [role="button"]')) return
+      const letterIndex = /^[a-d]$/i.test(event.key) ? event.key.toLocaleLowerCase('en').charCodeAt(0) - 97 : -1
+      const numberIndex = /^[1-4]$/.test(event.key) ? Number(event.key) - 1 : -1
+      if (!answered && exercise.type !== 'arrange' && (letterIndex >= 0 || numberIndex >= 0)) {
+        const choice = exercise.choices[letterIndex >= 0 ? letterIndex : numberIndex]
+        if (choice) { event.preventDefault(); setSelectedChoice(choice) }
+      } else if (event.key === 'Enter') {
+        if (answered) { event.preventDefault(); nextQuestion() }
+        else if (canCheck) { event.preventDefault(); checkAnswer() }
+      } else if (event.key === 'Escape' && !answered && placedIds.length) {
+        setPlacedIds([])
+      }
+    }
+    window.addEventListener('keydown', handleKey)
+    return () => window.removeEventListener('keydown', handleKey)
+  }, [answered, canCheck, checkAnswer, exercise, nextQuestion, placedIds.length])
 
   if (finished) {
     const total = unit.exercises.length
@@ -129,7 +164,7 @@ export function PracticeSession({
       <div key={`${unit.id}-${questionIndex}`} className="question-area" lang="en">
         <div className="question-prompt">
           <span className="question-number">{String(questionIndex + 1).padStart(2, '0')}</span>
-          <div><small>{exercise.prompt}</small>{exercise.type !== 'arrange' && <h3 lang="de" translate="no">{exercise.sentence}</h3>}</div>
+          <div><small>{exercise.prompt}</small></div>
         </div>
 
         {exercise.type === 'arrange' ? (
@@ -161,6 +196,10 @@ export function PracticeSession({
             )}
           </div>
         ) : (
+          <>
+          <div className={selectedChoice ? 'assembled-sentence has-choice' : 'assembled-sentence'} aria-live="polite" lang="de" translate="no">
+            {(exercise.sentence ?? '').split('___').map((part, index) => <span key={`${part}-${index}`}>{part}{index === 0 && <b>{selectedChoice || '___'}</b>}</span>)}
+          </div>
           <div className="choice-grid">
             {exercise.choices.map((choice, index) => {
               let className = selectedChoice === choice ? 'choice-option selected' : 'choice-option'
@@ -175,7 +214,9 @@ export function PracticeSession({
               )
             })}
           </div>
+          </>
         )}
+        <p className="practice-shortcuts"><Keyboard size={14} /> Keyboard: A–D or 1–4 choose · Enter checks or continues · Esc resets blocks</p>
       </div>
 
       {answered && (
@@ -186,6 +227,7 @@ export function PracticeSession({
               ? feedbackTone === 'direct' ? 'Correct.' : 'Spot on!'
               : feedbackTone === 'direct' ? 'Not quite. Here is the rule:' : 'Close – look at the pattern.'}</strong>
             <p>{exercise.explanation}</p>
+            <button type="button" className="hear-answer" onClick={speakAnswer}><Volume2 size={15} /> Hear the complete German sentence</button>
           </div>
         </div>
       )}

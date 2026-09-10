@@ -1,26 +1,26 @@
 import { ArrowLeft, ArrowRight, Check, Clock3, Leaf, RotateCcw, Sparkles, Timer, Trophy, X, Zap } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { articleDeck, curriculum, quickQuestions } from '../data/curriculum'
-import type { AnswerSignal, Exercise, ProgressState } from '../types'
+import type { AnswerSignal, Exercise, GameMode, ProgressState } from '../types'
 import { learningClock } from '../lib/learningClock'
-
-type GameMode = 'menu' | 'articles' | 'quick' | 'sentences'
 
 type PracticeHubProps = {
   progress: ProgressState
   onRecordAnswer: (correct: boolean, signal?: AnswerSignal) => void
   onGameComplete?: () => void
   initialGame?: GameMode
+  onModeChange?: (mode: GameMode) => void
 }
 
-export function PracticeHub({ progress, onRecordAnswer, onGameComplete, initialGame = 'menu' }: PracticeHubProps) {
+export function PracticeHub({ progress, onRecordAnswer, onGameComplete, initialGame = 'menu', onModeChange }: PracticeHubProps) {
   const [mode, setMode] = useState<GameMode>(initialGame)
+  const changeMode = (next: GameMode) => { setMode(next); onModeChange?.(next) }
   const accuracy = progress.practiceAnswered ? Math.round((progress.correctAnswers / progress.practiceAnswered) * 100) : 0
 
   if (mode !== 'menu') {
     return (
       <div className="page practice-page game-open">
-        <button className="back-button game-back" type="button" onClick={() => setMode('menu')}><ArrowLeft size={18} /> Playground</button>
+        <button className="back-button game-back" type="button" onClick={() => changeMode('menu')}><ArrowLeft size={18} /> Playground</button>
         {mode === 'articles' && <ArticleGame onRecord={onRecordAnswer} onComplete={onGameComplete} />}
         {mode === 'quick' && <QuickGame onRecord={onRecordAnswer} onComplete={onGameComplete} />}
         {mode === 'sentences' && <SentenceGame onRecord={onRecordAnswer} onComplete={onGameComplete} />}
@@ -54,7 +54,7 @@ export function PracticeHub({ progress, onRecordAnswer, onGameComplete, initialG
           <span className="time-chip"><Clock3 size={15} /> 2–5 min</span>
         </div>
         <div className="game-card-grid">
-          <button className="game-card article-game-card" type="button" onClick={() => setMode('articles')}>
+          <button className="game-card article-game-card" type="button" onClick={() => changeMode('articles')}>
             <div className="game-art article-art">
               <span className="article-chip der" lang="de" translate="no">der</span><span className="noun-chip" lang="de" translate="no">Apfel</span>
               <span className="article-chip die" lang="de" translate="no">die</span><span className="noun-chip small" lang="de" translate="no">Lampe</span>
@@ -62,11 +62,11 @@ export function PracticeHub({ progress, onRecordAnswer, onGameComplete, initialG
             </div>
             <div className="game-copy"><span className="game-label">COLOR GAME · 6 CARDS</span><strong className="game-card-title">Article Garden</strong><p>Match nouns to der, die, or das in a flash.</p><span className="play-game">Play <ArrowRight size={17} /></span></div>
           </button>
-          <button className="game-card quick-game-card" type="button" onClick={() => setMode('quick')}>
+          <button className="game-card quick-game-card" type="button" onClick={() => changeMode('quick')}>
             <div className="game-art quick-art"><span>A</span><span>B</span><span>C</span><i><Timer size={29} /></i></div>
             <div className="game-copy"><span className="game-label">MIX · 5 QUESTIONS</span><strong className="game-card-title">Quick Mix</strong><p>Five patterns across your entire A1 journey.</p><span className="play-game">Play <ArrowRight size={17} /></span></div>
           </button>
-          <button className="game-card sentence-game-card" type="button" onClick={() => setMode('sentences')}>
+          <button className="game-card sentence-game-card" type="button" onClick={() => changeMode('sentences')}>
             <div className="game-art sentence-art"><span lang="de" translate="no">Heute</span><span lang="de" translate="no">lerne</span><span lang="de" translate="no">ich</span><span lang="de" translate="no">Deutsch</span><i>1 → 2 → 3 → 4</i></div>
             <div className="game-copy"><span className="game-label">PUZZLE · 5 SENTENCES</span><strong className="game-card-title">Sentence Workshop</strong><p>Snap word blocks into the right order.</p><span className="play-game">Play <ArrowRight size={17} /></span></div>
           </button>

@@ -1,10 +1,10 @@
 import { ArrowLeft, ArrowRight, BookOpen, Check, Clock3, Eye, Headphones, Lightbulb, Play, Sparkles, Volume2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import type { AnswerSignal, ConfidenceRating, GrammarUnit, LearningMode, ProgressState, VisualStyle } from '../types'
+import type { AnswerSignal, ConfidenceRating, GrammarUnit, LearningMode, LessonTab, ProgressState, VisualStyle } from '../types'
+import { topicSlug } from '../lib/routes'
 import { PracticeSession } from './PracticeSession'
 import { TutorPanel } from './TutorPanel'
-
-type LessonTab = 'discover' | 'examples' | 'practice'
+import { InteractiveSentenceLab } from './InteractiveSentenceLab'
 
 type LessonViewProps = {
   unit: GrammarUnit
@@ -17,6 +17,8 @@ type LessonViewProps = {
   initialTab?: LessonTab
   visualStyle?: VisualStyle
   feedbackTone?: 'gentle' | 'direct'
+  focusTopic?: string
+  onTabChange?: (tab: LessonTab) => void
 }
 
 export function LessonView({
@@ -30,9 +32,16 @@ export function LessonView({
   initialTab = 'discover',
   visualStyle = 'blocks',
   feedbackTone = 'gentle',
+  focusTopic,
+  onTabChange,
 }: LessonViewProps) {
-  const [tab, setTab] = useState<LessonTab>(initialTab)
-  const [visualIndex, setVisualIndex] = useState(0)
+  const tab = initialTab
+  const topicWords = new Set((focusTopic ?? '').split('-').filter(word => word.length > 2))
+  const matchedVisual = unit.visual.states.findIndex(state => {
+    const stateWords = topicSlug(`${state.label} ${state.title}`).split('-')
+    return stateWords.some(word => topicWords.has(word) || [...topicWords].some(topic => word.startsWith(topic) || topic.startsWith(word)))
+  })
+  const [visualIndex, setVisualIndex] = useState(matchedVisual >= 0 ? matchedVisual : 0)
   const [speakingText, setSpeakingText] = useState('')
   const completed = progress.completedUnits.includes(unit.id)
   const bestScore = progress.unitScores[unit.id] ?? 0
@@ -61,9 +70,12 @@ export function LessonView({
   }
 
   const visualState = unit.visual.states[visualIndex]
+  const changeTab = (nextTab: LessonTab) => {
+    onTabChange?.(nextTab)
+  }
 
   return (
-    <div className={`page lesson-page visual-style-${visualStyle}`}>
+    <div className={`page lesson-page tab-${tab} visual-style-${visualStyle}`}>
       <div className="lesson-topline">
         <button className="back-button" type="button" onClick={onBack}><ArrowLeft size={18} /> Learning Path</button>
         <div className="lesson-top-progress">
@@ -91,7 +103,7 @@ export function LessonView({
           <div className="lesson-meta">
             <span><Clock3 size={16} /> {unit.duration} minutes</span>
             <span><Eye size={16} /> Visual</span>
-            <span><Play size={15} /> 3 exercises</span>
+            <span><Play size={15} /> {unit.exercises.length} exercises</span>
           </div>
         </div>
         <div className="lesson-hero-art" aria-hidden="true">
@@ -104,9 +116,9 @@ export function LessonView({
       </header>
 
       <nav className="lesson-tabs" aria-label="Lesson sections" role="tablist">
-        <button role="tab" aria-selected={tab === 'discover'} className={tab === 'discover' ? 'active' : ''} type="button" onClick={() => setTab('discover')}><Eye size={18} /> Discover</button>
-        <button role="tab" aria-selected={tab === 'examples'} className={tab === 'examples' ? 'active' : ''} type="button" onClick={() => { setTab('examples'); onModeSignal?.('examples') }}><BookOpen size={18} /> Examples</button>
-        <button role="tab" aria-selected={tab === 'practice'} className={tab === 'practice' ? 'active' : ''} type="button" onClick={() => setTab('practice')}><Play size={17} /> Practice <span>3</span></button>
+        <button role="tab" aria-selected={tab === 'discover'} className={tab === 'discover' ? 'active' : ''} type="button" onClick={() => changeTab('discover')}><Eye size={18} /> Discover</button>
+        <button role="tab" aria-selected={tab === 'examples'} className={tab === 'examples' ? 'active' : ''} type="button" onClick={() => { changeTab('examples'); onModeSignal?.('examples') }}><BookOpen size={18} /> Examples</button>
+        <button role="tab" aria-selected={tab === 'practice'} className={tab === 'practice' ? 'active' : ''} type="button" onClick={() => changeTab('practice')}><Play size={17} /> Practice <span>{unit.exercises.length}</span></button>
       </nav>
 
       {tab === 'discover' && (
@@ -115,7 +127,7 @@ export function LessonView({
             <section className="visual-lab">
               <div className="lab-heading">
                 <div><span className="section-kicker">VISUAL CONCEPT</span><h2>{unit.rule.label}</h2></div>
-                <span className="interactive-label"><i /> INTERACTIVE</span>
+                <span className="interactive-label"><i /> MOVE THE BLOCKS</span>
               </div>
               <p className="metaphor-copy">{unit.visual.metaphor}</p>
               <div className="state-switcher" role="tablist" aria-label="Switch visualization">
@@ -135,14 +147,12 @@ export function LessonView({
               <div className="visual-stage" lang="en">
                 <div className="stage-grid" />
                 <div className="visual-title"><small>NOW VISIBLE</small><h3>{visualState.title}</h3></div>
-                <div className="block-track notranslate" translate="no" lang="de" key={`${unit.id}-${visualIndex}`}>
-                  {visualState.blocks.map((block, index) => (
-                    <div key={`${block.text}-${index}`} className={`visual-block tone-${block.tone}${block.wide ? ' wide' : ''}`}>
-                      <span>{block.text}</span>
-                      {block.sub && <small>{block.sub}</small>}
-                    </div>
-                  ))}
-                </div>
+                <InteractiveSentenceLab
+                  key={`${unit.id}-${visualIndex}`}
+                  blocks={visualState.blocks}
+                  onInteract={() => onModeSignal?.('building')}
+                  onSpeak={speak}
+                />
                 <p className="visual-caption"><Lightbulb size={17} /> <span>{visualState.caption}</span></p>
               </div>
             </section>
@@ -152,12 +162,12 @@ export function LessonView({
                 <span className="rule-icon"><BookOpen size={21} /></span>
                 <div><span className="section-kicker">THE RULE IN PLAIN TERMS</span><h2>{unit.rule.title}</h2></div>
               </div>
-              <div className="formula-strip notranslate" translate="no" lang="de">{unit.rule.formula}</div>
+              <div className="formula-strip">{unit.rule.formula}</div>
               <p>{unit.rule.body}</p>
               <div className="memory-tip"><span>🧠</span><div><strong>Memory Hook</strong><p>{unit.rule.tip}</p></div></div>
             </section>
 
-            <button className="next-section-card" type="button" onClick={() => setTab('examples')}>
+            <button className="next-section-card" type="button" onClick={() => changeTab('examples')}>
               <span><small>UP NEXT</small><strong>See the rule in real sentences</strong></span>
               <span className="round-arrow"><ArrowRight size={19} /></span>
             </button>
@@ -170,7 +180,7 @@ export function LessonView({
             </section>
             <section className="topic-card">
               <span className="section-kicker">IN THIS CHAPTER</span>
-              <div>{unit.topics.map((topic, index) => <span key={topic}><i>{String(index + 1).padStart(2, '0')}</i>{topic}</span>)}</div>
+              <div>{unit.topics.map((topic, index) => <span className={focusTopic === topicSlug(topic) ? 'focused-topic' : ''} key={topic}><i>{String(index + 1).padStart(2, '0')}</i>{topic}{focusTopic === topicSlug(topic) && <b>YOUR TOPIC</b>}</span>)}</div>
             </section>
             <section className="audio-card">
               <span className="audio-card-icon"><Headphones size={21} /></span>
@@ -200,7 +210,7 @@ export function LessonView({
           <div className="example-pattern-summary">
             <span className="summary-symbol">✦</span>
             <div><small>YOUR AHA MOMENT</small><strong>{unit.rule.formula}</strong><p>{unit.rule.title}</p></div>
-            <button type="button" className="primary-button" onClick={() => setTab('practice')}>Try it now <ArrowRight size={17} /></button>
+            <button type="button" className="primary-button" onClick={() => changeTab('practice')}>Try it now <ArrowRight size={17} /></button>
           </div>
         </section>
       )}
@@ -209,6 +219,10 @@ export function LessonView({
 
       {tab === 'practice' && (
         <section className="lesson-practice-wrap">
+          <details className="pocket-rule" open={window.matchMedia('(min-width: 601px)').matches}>
+            <summary><BookOpen size={17} /> Pocket rule <span>Keep this open while you practise</span></summary>
+            <div><strong>{unit.rule.title}</strong><code>{unit.rule.formula}</code><p>{unit.rule.tip}</p></div>
+          </details>
           <div className="practice-title">
             <span className="section-kicker">YOUR TURN</span>
             <h2>Play instead of memorizing.</h2>
@@ -221,7 +235,7 @@ export function LessonView({
             onRecordAnswer={onRecordAnswer}
             onRecordConfidence={onRecordConfidence}
             feedbackTone={feedbackTone}
-            onBackToLesson={() => setTab('discover')}
+            onBackToLesson={() => changeTab('discover')}
           />
         </section>
       )}

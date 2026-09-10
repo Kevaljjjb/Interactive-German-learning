@@ -1,7 +1,7 @@
-import { ArrowRight, Check, ChevronRight, Flame, Leaf, Play, Sparkles, Target } from 'lucide-react'
+import { ArrowRight, BrainCircuit, Check, ChevronRight, Flame, Leaf, Play, Sparkles, Target } from 'lucide-react'
 import { useState } from 'react'
 import { curriculum } from '../data/curriculum'
-import type { DailyPlan, DailySlot, GrammarUnit, LearnerProfile, LearningFingerprint, ProgressState } from '../types'
+import type { DailyPlan, DailySlot, GameMode, GrammarUnit, LearnerProfile, LearningFingerprint, ProgressState } from '../types'
 import { SmartDailyPlan } from './SmartDailyPlan'
 
 type HomeProps = {
@@ -11,8 +11,9 @@ type HomeProps = {
   dailyPlan: DailyPlan
   onOpenUnit: (unit: GrammarUnit) => void
   onOpenPath: () => void
-  onPractice: () => void
+  onPractice: (game?: GameMode) => void
   onPersonalize: () => void
+  onOpenGuide: (question?: string) => void
   onStartDailySlot: (slot: DailySlot) => void
   onClearWobbly?: () => void
   onPracticeWobbly?: (unitId: string) => void
@@ -36,6 +37,7 @@ export function Home({
   onOpenPath,
   onPractice,
   onPersonalize,
+  onOpenGuide,
   onStartDailySlot,
   onClearWobbly,
   onPracticeWobbly,
@@ -43,6 +45,8 @@ export function Home({
   const [patternMode, setPatternMode] = useState<'subject' | 'time'>('subject')
   const nextUnit = curriculum.find((unit) => !progress.completedUnits.includes(unit.id)) ?? curriculum[0]
   const pathPercent = Math.round((progress.completedUnits.length / curriculum.length) * 100)
+  const frontierIndex = Math.max(0, curriculum.findIndex(unit => unit.id === nextUnit.id))
+  const frontierUnits = curriculum.slice(Math.max(0, frontierIndex - 1), Math.min(curriculum.length, frontierIndex + 2))
   const todayIndex = (new Date().getDay() + 6) % 7
   const greeting = profile.name.trim() ? `Hello, ${profile.name.trim()}!` : 'Hello, Explorer!'
 
@@ -69,7 +73,7 @@ export function Home({
               <Play size={17} fill="currentColor" /> Continue learning
             </button>
             <button className="text-button hero-link" type="button" onClick={onOpenPath}>
-              All 12 chapters <ArrowRight size={17} />
+              Browse 64 topics <ArrowRight size={17} />
             </button>
           </div>
           <div className="hero-progress">
@@ -96,6 +100,15 @@ export function Home({
         </div>
       </section>
 
+      <section className="ai-command-card" aria-labelledby="ai-command-title">
+        <div className="ai-command-icon"><BrainCircuit size={27} /></div>
+        <div className="ai-command-copy"><small>NEW · AI COURSE NAVIGATOR</small><h2 id="ai-command-title">Name a topic. Get a clear route.</h2><p>Ask in English. Your guide will explain the starting point and link directly to the right visual lesson.</p></div>
+        <div className="ai-command-prompts">
+          {['Accusative vs dative', 'German word order', 'der, die, das', 'Past tense'].map(topic => <button type="button" key={topic} onClick={() => onOpenGuide(`I want to learn ${topic}. Where should I start?`)}>{topic}<ArrowRight size={14} /></button>)}
+        </div>
+        <button type="button" className="ai-command-main" onClick={() => onOpenGuide()}><Sparkles size={16} /> Ask your own question</button>
+      </section>
+
       <div className="dashboard-layout">
         <div className="dashboard-main">
           <SmartDailyPlan
@@ -106,12 +119,12 @@ export function Home({
               const u = curriculum.find((unit) => unit.id === unitId) ?? nextUnit
               onOpenUnit(u)
             }}
-            onOpenGame={onPractice}
+            onOpenGame={(slot) => onPractice(slot.title.includes('Sentence Workshop') ? 'sentences' : slot.title.includes('Article Garden') ? 'articles' : 'quick')}
             onWarmup={() => {
               if (progress.wobblyItems && progress.wobblyItems.length > 0 && onPracticeWobbly) {
                 onPracticeWobbly(progress.wobblyItems[0].unitId)
               } else {
-                onPractice()
+                onPractice('articles')
               }
             }}
           />
@@ -124,7 +137,7 @@ export function Home({
                 <span><small>COLOR CODE</small><strong>See articles</strong></span>
                 <ChevronRight size={18} />
               </button>
-              <button type="button" onClick={onPractice}>
+              <button type="button" onClick={() => onPractice()}>
                 <span className="micro-icon yellow">A↔B</span>
                 <span><small>2-MIN GAME</small><strong>Arrange sentences</strong></span>
                 <ChevronRight size={18} />
@@ -141,7 +154,7 @@ export function Home({
               <button className="text-button" type="button" onClick={onOpenPath}>View all <ArrowRight size={16} /></button>
             </div>
             <div className="preview-units">
-              {curriculum.slice(0, 3).map((unit) => {
+              {frontierUnits.map((unit) => {
                 const done = progress.completedUnits.includes(unit.id)
                 const score = progress.unitScores[unit.id]
                 return (
@@ -215,7 +228,7 @@ export function Home({
             )}
           </section>
 
-          <button className="leaves-card" type="button" onClick={onPractice}>
+          <button className="leaves-card" type="button" onClick={() => onPractice()}>
             <span className="leaves-icon"><Leaf size={22} /></span>
             <span><small>COLLECTED</small><strong>{progress.leaves} {progress.leaves === 1 ? 'leaf' : 'leaves'}</strong></span>
             <ArrowRight size={18} />

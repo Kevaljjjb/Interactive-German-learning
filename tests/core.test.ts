@@ -3,7 +3,8 @@ import assert from 'node:assert/strict'
 import { createServer } from 'node:http'
 import { once } from 'node:events'
 import { curriculum, articleDeck } from '../src/data/curriculum.ts'
-import { createTutorMiddleware, validateRequest, buildPrompt } from '../server/tutor.ts'
+import { lessonHref, parseHash, practiceHref } from '../src/lib/routes.ts'
+import { buildGuidePrompt, buildPrompt, createTutorMiddleware, localRecommendations, parseGuideResponse, validateGuideRequest, validateRequest } from '../server/tutor.ts'
 
 const request = {
   question: 'Why den?', topic: 'Akkusativ', rule: 'der → den', examples: ['Ich sehe den Hund.'],
@@ -26,6 +27,13 @@ test('all curriculum keys, examples and token sets are internally consistent', (
   assert.ok(articleDeck.every(card => ['der', 'die', 'das'].includes(card.article)))
 })
 
+test('deep links parse into stable chapter, topic and game routes', () => {
+  assert.equal(lessonHref('essen-artikel', 'discover', 'Accusative case'), '#/learn/essen-artikel/discover/accusative-case')
+  assert.deepEqual(parseHash('#/learn/essen-artikel/practice/accusative'), { kind: 'lesson', unitId: 'essen-artikel', tab: 'practice', topic: 'accusative' })
+  assert.deepEqual(parseHash(practiceHref('sentences')), { kind: 'practice', game: 'sentences' })
+  assert.deepEqual(parseHash('#/unknown'), { kind: 'view', view: 'home' })
+})
+
 test('tutor input is bounded and personal extra fields are stripped', () => {
   const valid = validateRequest({ ...request, name: 'Secret name', apiKey: 'secret' })
   assert.ok(valid)
@@ -38,8 +46,13 @@ test('tutor input is bounded and personal extra fields are stripped', () => {
   assert.match(buildPrompt(valid), /untrusted learning content/)
 })
 
-async function withServer(config: Parameters<typeof createTutorMiddleware>[0], run: (url: string) => Promise<void>, fetcher?: typeof fetch) {
-  const middleware = createTutorMiddleware(config, fetcher)
+async function withServer(
+  config: Parameters<typeof createTutorMiddleware>[0],
+  run: (url: string) => Promise<void>,
+  fetcher?: typeof fetch,
+  codex?: Parameters<typeof createTutorMiddleware>[2],
+) {
+  const middleware = createTutorMiddleware(config, fetcher, codex)
   const server = createServer((req, res) => { void middleware(req, res, () => { res.writeHead(404); res.end() }) })
   server.listen(0, '127.0.0.1')
   await once(server, 'listening')
@@ -49,12 +62,49 @@ async function withServer(config: Parameters<typeof createTutorMiddleware>[0], r
   finally { server.closeAllConnections(); await new Promise<void>(resolve => server.close(() => resolve())) }
 }
 
+test('guide requests and recommendation links are strictly bounded', () => {
+  const guide = validateGuideRequest({ question: 'Teach me accusative', completedUnitIds: ['hallo-verbmotor'], name: 'Private' })
+  assert.deepEqual(guide, { question: 'Teach me accusative', completedUnitIds: ['hallo-verbmotor'] })
+  assert.equal(validateGuideRequest({ question: 'x', completedUnitIds: ['invented-unit'] }), null)
+  assert.match(buildGuidePrompt(guide!), /Return ONLY JSON/)
+  assert.equal(localRecommendations('I want to learn accusative articles')[0]?.unitId, 'essen-artikel')
+  const parsed = parseGuideResponse(JSON.stringify({ answer: 'Start here.', recommendations: [
+    { unitId: 'invented-unit', tab: 'practice', reason: 'unsafe' },
+    { unitId: 'essen-artikel', tab: 'examples', topic: 'Accusative case', reason: 'See the pattern.' },
+  ] }), 'accusative')
+  assert.equal(parsed.recommendations[0]?.unitId, 'essen-artikel')
+  assert.ok(parsed.recommendations.every(item => curriculum.some(unit => unit.id === item.unitId)))
+})
+
 test('unconfigured tutor is honest and does not attempt external requests', async () => {
   await withServer({}, async url => {
     assert.equal((await (await fetch(`${url}/api/tutor/status`)).json()).available, false)
     assert.equal((await fetch(`${url}/api/tutor`, { method: 'POST' })).status, 503)
     assert.equal((await fetch(`${url}/api/tutor/status`, { headers: { Origin: 'https://evil.example' } })).status, 403)
   })
+})
+
+test('Codex guide returns only validated internal course links', async () => {
+  const codex = {
+    probe: async () => true,
+    run: async (prompt: string) => {
+      assert.match(prompt, /German A1 learner/)
+      return JSON.stringify({ answer: 'The accusative marks the direct object.', recommendations: [
+        { unitId: 'essen-artikel', tab: 'discover', topic: 'Accusative case', reason: 'Learn der to den.' },
+        { unitId: '../../escape', tab: 'practice', reason: 'bad' },
+      ] })
+    },
+  }
+  await withServer({ provider: 'codex-cli', codexBin: '/safe/codex' }, async url => {
+    const status = await (await fetch(`${url}/api/tutor/status`)).json()
+    assert.equal(status.available, true)
+    assert.equal(status.provider, 'codex-cli')
+    const response = await fetch(`${url}/api/guide`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ question: 'Teach me accusative', completedUnitIds: [] }) })
+    assert.equal(response.status, 200)
+    const result = await response.json()
+    assert.equal(result.recommendations[0].unitId, 'essen-artikel')
+    assert.ok(!JSON.stringify(result).includes('../../escape'))
+  }, fetch, codex)
 })
 
 test('configured tutor proxies a bounded request and hides credentials', async () => {

@@ -26,8 +26,11 @@ npm run preview
 
 ## Included
 
-- 12 A1 chapters and 60+ grammar topic markers
-- Interactive visual grammar models
+- 12 A1 chapters and 64 directly searchable grammar topics
+- Bookmarkable routes for every chapter, tab, topic, and mini-game
+- A tactile sentence lab with drag, tap-to-swap, mixing, reset, and German audio
+- An AI Learning Compass that explains where to start and generates validated one-click course links
+- Interactive visual grammar models and a pocket rule beside practice
 - German text-to-speech examples
 - Choice, fill-in, and sentence-building exercises
 - Article Garden, Blitz Mix, and Sentence Workshop games
@@ -36,7 +39,7 @@ npm run preview
 - Adaptive daily plan based on accuracy, response time, recent errors, confidence, and preferred learning format
 - Local learning fingerprint and progress dashboard
 - Browser-local persistence; learning data stays on the device
-- Responsive desktop/mobile UI and keyboard-friendly controls
+- Responsive desktop/mobile UI and practice shortcuts (`A`–`D`, `1`–`4`, `Enter`, and `Esc`)
 
 ## Main files
 
@@ -45,21 +48,33 @@ npm run preview
 - `src/components/LessonView.tsx` — lesson visualization, examples, audio, and practice
 - `src/components/PracticeHub.tsx` — mini-games
 - `src/components/LearningFingerprintCard.tsx` — adaptive learning insights
+- `src/components/AILearningGuide.tsx` — global AI topic navigator and direct links
+- `src/components/InteractiveSentenceLab.tsx` — tactile visual grammar sandbox
+- `src/lib/routes.ts` — dependency-free bookmarkable hash routes
+- `server/tutor.ts` — validated API/Codex middleware and isolated subprocess adapter
 
-## Optional live AI tutor
+## Connected AI: Codex CLI
 
-On each chapter’s **Examples** tab, the tutor can offer simpler explanations, fresh examples, and a small challenge. English explanations with German examples are the default.
+Codex CLI is installed as a local development dependency and is the default AI provider. It uses your existing ChatGPT/Codex login—no API key is placed in the app.
 
-1. Copy `.env.example` to `.env.local`.
-2. Set `AI_PROVIDER` (`gemini` or `openai`), `AI_MODEL` (an actual model ID available to your API account), and `AI_API_KEY`.
-3. Restart `npm run dev`. The same local API also works with `npm run preview`.
-4. Explicitly consent in the tutor panel before sending a request.
+```bash
+npm run ai:status       # verify authentication
+npm run ai:login        # device login, only if status says logged out
+npm run ai:test         # real read-only connection test
+npm run dev
+```
 
-Keys stay server-side. Never prefix a secret with `VITE_`. The endpoint allows localhost only, checks Origin, limits input size and request rate, and times out provider calls. Do not expose this personal server publicly without authentication. Development CLI subscriptions and model nicknames do not automatically provide API access.
+The global **AI Learning Compass** accepts an English learning goal, gives a bounded A1 explanation, and returns only validated internal links such as `#/learn/essen-artikel/discover/accusative`. The chapter **Examples** tab also has a context-aware tutor for simpler explanations, new examples, and challenges.
 
-Only the current question, chapter explanation/examples, selected visual format, aggregate chapter answer counts, and an uncertainty flag are sent. Names and full history are excluded. Provider privacy policies still apply. Generated answers are untrusted advice, not grading. Real provider connectivity requires your credentials; automated tests use mock provider responses.
+Each request launches `codex exec` without a shell, sends the prompt through stdin, and runs in an isolated temporary directory with `--sandbox read-only`, `--ephemeral`, a timeout, and output limits. The endpoint accepts localhost only, checks Origin, validates/limits request data, serializes requests, and never renders model HTML. Do not expose this personal server publicly without authentication.
 
-A static `dist/` deployment runs the lessons but **not** the AI endpoint. The in-app adaptive plan is a transparent local heuristic, not an LLM or a scientifically validated learning-style diagnosis. Format use and task accuracy are clues, not proof that one modality is best. There is no account, cloud sync, or service-worker offline installation yet.
+Explicit in-app consent is required. The guide sends only the current question and completed chapter IDs. The chapter tutor sends the current chapter context, aggregate answer counts, chosen visual format, and question. Names, raw answer history, browser data, and credentials are excluded. Prompts still leave your computer through the signed-in Codex service and are subject to its policies. Generated answers are suggestions, not grading.
+
+### Alternative API providers
+
+To use Gemini or the OpenAI API instead, copy `.env.example` to `.env.local` and set `AI_PROVIDER`, `AI_MODEL`, and the server-only `AI_API_KEY`. Never use a `VITE_` prefix for secrets. Restart Vite after changing configuration.
+
+A static `dist/` deployment runs the lessons and hash-based direct links but **not** the AI endpoint. The in-app adaptive plan is a transparent local heuristic, not an LLM or a scientifically validated learning-style diagnosis. Format use and task accuracy are clues, not proof that one modality is best. There is no account, cloud sync, or service-worker offline installation yet.
 
 ## Verification
 
@@ -69,6 +84,8 @@ Requires Node.js 22.6+ (Node 24+ recommended).
 npm run build
 npm run lint
 npm test
+npm run ai:status
+npm run ai:test
 ```
 
 Optional real-browser smoke test (with the local dev server running):

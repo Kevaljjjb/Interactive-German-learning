@@ -6,6 +6,7 @@ import type { GrammarUnit, ProgressState } from '../types'
 type LearningPathProps = {
   progress: ProgressState
   onOpenUnit: (unit: GrammarUnit) => void
+  onOpenTopic: (unit: GrammarUnit, topic: string) => void
 }
 
 const groups = [
@@ -14,7 +15,7 @@ const groups = [
   { title: 'Free Expression', subtitle: 'People, past tense, and space', range: [9, 12], color: '#6879A7' },
 ]
 
-export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
+export function LearningPath({ progress, onOpenUnit, onOpenTopic }: LearningPathProps) {
   const [query, setQuery] = useState('')
   const normalizedQuery = query.trim().toLocaleLowerCase('de')
   const filtered = useMemo(() => {
@@ -24,6 +25,9 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
     )
   }, [normalizedQuery])
 
+  const matchingTopics = useMemo(() => curriculum.flatMap(unit => unit.topics
+    .filter(topic => !normalizedQuery || [topic, unit.title, unit.theme].join(' ').toLocaleLowerCase('en').includes(normalizedQuery))
+    .map(topic => ({ unit, topic }))), [normalizedQuery])
   const percent = Math.round((progress.completedUnits.length / curriculum.length) * 100)
   const topicCount = curriculum.reduce((total, unit) => total + unit.topics.length, 0)
 
@@ -62,6 +66,13 @@ export function LearningPath({ progress, onOpenUnit }: LearningPathProps) {
           <span><i className="legend-dot plural" /> Plural</span>
         </div>
       </div>
+
+      <details className="topic-directory" open={Boolean(normalizedQuery)}>
+        <summary><span><Sparkles size={17} /><strong>{normalizedQuery ? `${matchingTopics.length} matching topic links` : `Explore all ${topicCount} grammar topics`}</strong></span><small>Open a topic directly inside its visual chapter</small></summary>
+        <div className="topic-directory-grid">
+          {matchingTopics.map(({ unit, topic }) => <button type="button" key={`${unit.id}-${topic}`} onClick={() => onOpenTopic(unit, topic)}><span style={{ background: unit.softColor }}>{unit.icon}</span><span><strong>{topic}</strong><small>Chapter {unit.number} · {unit.title}</small></span><ArrowRight size={15} /></button>)}
+        </div>
+      </details>
 
       {normalizedQuery ? (
         <section className="search-results">

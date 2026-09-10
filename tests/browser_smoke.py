@@ -30,6 +30,12 @@ with sync_playwright() as p:
     print('PASS: four views at five viewport sizes')
 
     page = open_app(browser)
+    page.locator('.daily-slot-card.play button').click()
+    assert '#/practice/articles' in page.url, 'Daily game should have a reload-safe direct route'
+    page.close()
+    print('PASS: daily game opens its bookmarkable game route')
+
+    page = open_app(browser)
     page.locator('.daily-slot-card.core button').click()
     state = page.evaluate("JSON.parse(localStorage.getItem('satzgarten-progress-v2'))")
     assert not state['completedDailySlotIds'] and state['leaves'] == 0
@@ -74,14 +80,15 @@ with sync_playwright() as p:
         page.locator('.article-option').first.click()
         page.locator('.game-feedback button').click()
     assert page.locator('.game-result').is_visible()
+    assert page.evaluate("JSON.parse(localStorage.getItem('satzgarten-progress-v2')).completedDailySlotIds") == ['slot-core'], 'A casual game must not complete a daily slot'
     page.get_by_role('button', name='Play another round').click()
     assert page.locator('.noun-stage').is_visible()
     print('PASS: article round completion and replay, including translated-DOM recovery')
     page.locator('.side-nav button').nth(1).click()
     page.locator('.unit-card button').nth(2).click()
     page.get_by_role('tab', name='Practice 3').click()
-    assert page.locator('.question-prompt h3').get_attribute('translate') == 'no'
-    assert page.locator('.question-prompt h3').inner_text() == 'Ich kaufe ___ Apfel.'
+    assert page.locator('.assembled-sentence').get_attribute('translate') == 'no'
+    assert 'Ich kaufe' in page.locator('.assembled-sentence').inner_text() and '___' in page.locator('.assembled-sentence').inner_text()
     assert page.locator('.choice-option strong').all_text_contents() == ['ein', 'einen', 'eine']
     page.get_by_role('button', name='B einen', exact=True).click()
     page.get_by_role('button', name='Check', exact=True).click()
@@ -98,7 +105,7 @@ with sync_playwright() as p:
     page.route('**/api/tutor', tutor_mock)
     page.get_by_role('button', name='Continue learning').click()
     page.get_by_role('tab', name='Examples', exact=True).click()
-    page.wait_for_function("document.querySelector('.tutor-status').textContent === 'mock-model'")
+    page.wait_for_function("document.querySelector('.tutor-status').textContent.includes('mock-model')")
     ask = page.get_by_role('button', name='Explain more simply')
     assert ask.is_disabled()
     page.locator('.tutor-consent input').check()
@@ -107,6 +114,50 @@ with sync_playwright() as p:
     page.locator('.tutor-answer').wait_for()
     assert len(requests) == 1 and 'name' not in requests[0]
     assert requests[0]['question'] == 'Why den?'
-    print('PASS: optional AI consent, minimal context and answer rendering (mocked)')
+    print('PASS: optional lesson AI consent, minimal context and answer rendering (mocked)')
+    page.close()
+
+    page = open_app(browser)
+    page.route('**/api/tutor/status', lambda route: route.fulfill(json={'available': True, 'provider': 'codex-cli', 'model': 'mock-codex'}))
+    guide_requests = []
+    def guide_mock(route):
+        guide_requests.append(route.request.post_data_json)
+        route.fulfill(json={'answer': 'Start with the direct object pattern.', 'model': 'mock-codex', 'recommendations': [{'unitId': 'essen-artikel', 'tab': 'discover', 'topic': 'Accusative', 'label': 'Der, Die, Das in the Basket', 'reason': 'Learn why der changes to den.'}]})
+    page.route('**/api/guide', guide_mock)
+    page.get_by_role('button', name='Ask the AI guide Find any grammar topic').click()
+    page.locator('#guide-question').fill('Teach me accusative')
+    assert page.locator('.guide-routes a').count() >= 1, 'Local direct links should appear before an AI request'
+    page.locator('.guide-consent input').check()
+    page.get_by_role('button', name='Ask AI and build my route').click()
+    page.locator('.guide-answer').wait_for()
+    link = page.locator('.guide-routes a').first
+    assert '#/learn/essen-artikel/discover/accusative' in link.get_attribute('href')
+    link.click()
+    assert '#/learn/essen-artikel/discover/accusative' in page.url
+    assert page.locator('.focused-topic').count() == 1
+    assert page.get_by_role('tab', name='Accusative').get_attribute('aria-selected') == 'true'
+    assert guide_requests[0] == {'question': 'Teach me accusative', 'completedUnitIds': []}
+    page.get_by_role('button', name='Mix').click()
+    assert 'Keep experimenting' in page.locator('.syntax-signal').inner_text()
+    page.get_by_role('button', name='Reset').click()
+    assert 'Pattern locked' in page.locator('.syntax-signal').inner_text()
+    original_blocks = page.locator('.kinetic-block > span').all_text_contents()
+    page.locator('.kinetic-block').first.click()
+    page.locator('.kinetic-block').last.click()
+    swapped_blocks = page.locator('.kinetic-block > span').all_text_contents()
+    assert swapped_blocks[0] == original_blocks[-1] and swapped_blocks[-1] == original_blocks[0], 'Tap interaction must truly swap blocks'
+    page.get_by_role('button', name='Reset').click()
+    page.get_by_role('tab', name='Practice 3').click()
+    assert '#/learn/essen-artikel/practice/accusative' in page.url
+    page.get_by_role('button', name='B einen', exact=True).click()
+    assert 'einen' in page.locator('.assembled-sentence').inner_text()
+    page.get_by_role('button', name='Open AI learning guide').click()
+    page.keyboard.press('Escape')
+    assert page.locator('.ai-guide').count() == 0 and 'einen' in page.locator('.assembled-sentence').inner_text(), 'Modal shortcuts must not modify background practice'
+    page.go_back()
+    assert '#/learn/essen-artikel/discover/accusative' in page.url and page.locator('.kinetic-lab').is_visible()
+    page.go_forward()
+    assert '#/learn/essen-artikel/practice/accusative' in page.url and page.locator('.practice-session').is_visible()
+    print('PASS: AI topic routing, browser history, topic focus, focus-safe modal and kinetic sentence lab')
     page.close()
     browser.close()
